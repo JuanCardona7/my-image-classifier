@@ -1,4 +1,0 @@
-"""
-Project configuration management.
-"""
-
