@@ -22,8 +22,10 @@ __pycache__/
 Thumbs.db
 
 # Data
-data/
-datasets/
+data/**
+!data/
+!data/**/
+!data/**/.gitkeep
 
 # Logs
 logs/
