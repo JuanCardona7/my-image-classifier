@@ -1,0 +1,27 @@
+project:
+  name: my-image-classifier
+
+paths:
+  data_dir: data
+
+  raw:
+    images: data/raw/images
+    metadata: data/raw/metadata
+
+  interim:
+    images: data/interim/images
+    metadata: data/interim/metadata
+
+  processed:
+    images: data/processed/images
+    metadata: data/processed/metadata
+
+  external:
+    images: data/external/images
+    metadata: data/external/metadata
+
+files:
+  raw:
+    ground_truth: data/raw/metadata/ISIC_2024_Training_GroundTruth.csv
+    supplement: data/raw/metadata/ISIC_2024_Training_Supplement.csv
+    metadata: data/raw/metadata/metadata.csv
