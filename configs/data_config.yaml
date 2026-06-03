@@ -8,6 +8,10 @@ paths:
     images: data/raw/images
     metadata: data/raw/metadata
 
+    ground_truth_csv: data/raw/metadata/ISIC_2024_Training_GroundTruth.csv
+    supplement_csv: data/raw/metadata/ISIC_2024_Training_Supplement.csv
+    metadata_csv: data/raw/metadata/metadata.csv
+
   interim:
     images: data/interim/images
     metadata: data/interim/metadata
@@ -19,9 +23,3 @@ paths:
   external:
     images: data/external/images
     metadata: data/external/metadata
-
-files:
-  raw:
-    ground_truth: data/raw/metadata/ISIC_2024_Training_GroundTruth.csv
-    supplement: data/raw/metadata/ISIC_2024_Training_Supplement.csv
-    metadata: data/raw/metadata/metadata.csv
