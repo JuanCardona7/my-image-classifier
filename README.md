@@ -50,6 +50,12 @@ Install dependencies:
 uv sync
 ```
 
+Install the package in editable mode:
+
+```bash
+uv pip install -e .
+```
+
 Install pre-commit hooks:
 
 ```bash
