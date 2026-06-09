@@ -81,6 +81,8 @@ def save_metadata_parquet(
     df: pd.DataFrame,
     stage: str,
     config_path: str | Path = "configs/data_config.yaml",
+    name: str | None = None,
+    timestamp: bool = True,
 ) -> Path:
     """
     Save a DataFrame as a parquet file inside the metadata folder
@@ -94,6 +96,13 @@ def save_metadata_parquet(
         Either 'interim' or 'processed'.
     config_path : str | Path
         Path to the YAML config file.
+    name : str | None
+        Optional base name for the output file. If provided, the
+        filename will use this name.
+    timestamp : bool
+        If True and a name is provided, append a timestamp to the
+        filename. If name is not provided, the default filename
+        convention is used and timestamp is always included.
 
     Returns
     -------
@@ -108,12 +117,19 @@ def save_metadata_parquet(
     output_dir = path(config["paths"][stage]["metadata"])
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    if stage == "interim":
-        filename = f"df_interim_{timestamp}.parquet"
+    if name:
+        base_name = Path(name).stem
+        if timestamp:
+            filename = f"{base_name}_{timestamp_str}.parquet"
+        else:
+            filename = f"{base_name}.parquet"
     else:
-        filename = f"df_preprocessed_{timestamp}.parquet"
+        if stage == "interim":
+            filename = f"df_interim_{timestamp_str}.parquet"
+        else:
+            filename = f"df_preprocessed_{timestamp_str}.parquet"
 
     output_path = output_dir / filename
 
