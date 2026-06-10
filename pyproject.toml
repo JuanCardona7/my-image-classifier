@@ -10,6 +10,7 @@ dependencies = [
     "pandas>=3.0.3",
     "pyarrow>=24.0.0",
     "pyyaml>=6.0.3",
+    "seaborn>=0.13.2",
 ]
 
 [dependency-groups]

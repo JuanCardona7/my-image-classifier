@@ -61,9 +61,11 @@ def main() -> None:
         "age_approx",
         "sex",
         "anatom_site_general",
+        "clin_size_long_diam_mm",
         "tbp_lv_nevi_confidence",
         "tbp_lv_dnn_lesion_confidence",
         "tbp_lv_location",
+        "tbp_lv_location_simple",
     ]
 
     missing_columns = [col for col in keep_columns if col not in merged.columns]
