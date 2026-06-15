@@ -42,6 +42,17 @@ ATTRIBUTION_PALETTE = {
     "ViDIR Vienna": "#8C8C8C",
 }
 
+STATISTIC_PALETTE = {
+    "distribution": "#4C72B0",
+    "mean": "#C44E52",
+    "median": "#55A868",
+}
+
+PREDICTIVE_PALETTE = {
+    "hypothesis_1": "#4C72B0",
+    "hypothesis_2": "#DD8452",
+}
+
 # ---------------------------------------------------------------------
 # Display labels
 # ---------------------------------------------------------------------
