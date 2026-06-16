@@ -62,9 +62,45 @@ SIZE_GROUP_PALETTE = {
     "≥15 mm": "#64B5CD",
 }
 
+ANATOM_SITE_PALETTE = {
+    "Torso posterior": "#4C72B0",
+    "Extremidad inferior": "#6A9F58",
+    "Torso anterior": "#DD8452",
+    "Extremidad superior": "#8172B3",
+    "Cabeza/cuello": "#C44E52",
+    "Localización desconocida": "#9E9E9E",
+}
+
 # ---------------------------------------------------------------------
 # Display labels
 # ---------------------------------------------------------------------
+
+ANATOM_SITE_LABELS = {
+    "posterior torso": "Torso posterior",
+    "lower extremity": "Extremidad inferior",
+    "anterior torso": "Torso anterior",
+    "upper extremity": "Extremidad superior",
+    "head/neck": "Cabeza/cuello",
+    "Missing": "Localización desconocida",
+}
+
+ANATOM_SITE_DISPLAY_LABELS = {
+    "Posterior torso": "Torso posterior",
+    "Lower extremity": "Extremidad inferior",
+    "Anterior torso": "Torso anterior",
+    "Upper extremity": "Extremidad superior",
+    "Head/neck": "Cabeza/cuello",
+    "Missing": "Localización desconocida",
+}
+
+ANATOM_SITE_ORDER = [
+    "Torso posterior",
+    "Extremidad inferior",
+    "Torso anterior",
+    "Extremidad superior",
+    "Cabeza/cuello",
+    "Localización desconocida",
+]
 
 SEX_LABELS = {
     "female": "Mujer",
