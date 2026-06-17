@@ -1,5 +1,6 @@
 from pathlib import Path
 from datetime import datetime
+import re
 
 import pandas as pd
 import yaml
@@ -50,28 +51,114 @@ def load_metadata_parquet(
     stage: str,
     filename: str,
     config_path: str | Path = "configs/data_config.yaml",
+    timestamp_flag: bool = False,
+    timestamp_value: str | None = None,
 ) -> pd.DataFrame:
     """
-    Load a parquet file from the metadata folder of either
-    interim or processed data.
+    Load a metadata Parquet file from the interim or processed data folder.
+
+    Parameters
+    ----------
+    stage:
+        Data stage from which to load the file. Must be either "interim"
+        or "processed".
+
+    filename:
+        Base filename or full Parquet filename. If timestamp_flag=False,
+        the function loads <stage>/metadata/<filename>. If the filename
+        does not end with ".parquet", the extension is added automatically.
+
+        If timestamp_flag=True, filename is interpreted as the base filename.
+        If ".parquet" is included, it is removed before appending the
+        timestamp.
+
+    config_path:
+        Path to the YAML configuration file containing data paths.
+
+    timestamp_flag:
+        Whether to load a timestamped Parquet file.
+
+    timestamp_value:
+        Optional timestamp in the format YYYYmmdd_HHMMSS. If provided,
+        the function loads <base_filename>_<timestamp_value>.parquet.
+        If None and timestamp_flag=True, the function searches for matching
+        timestamped files and loads the one with the latest valid timestamp.
+
+    Returns
+    -------
+    pd.DataFrame
+        Loaded metadata dataframe.
     """
     if stage not in {"interim", "processed"}:
         raise ValueError("stage must be either 'interim' or 'processed'.")
 
     config = load_yaml_config(path(config_path))
+    output_dir = path(config["paths"][stage]["metadata"])
 
-    parquet_path = path(config["paths"][stage]["metadata"]) / filename
+    if not output_dir.exists():
+        raise FileNotFoundError(f"Metadata directory not found: {output_dir}")
 
-    if not parquet_path.exists():
-        available = sorted(p.name for p in parquet_path.parent.glob("*.parquet"))
+    base_filename = Path(filename).stem
 
-    raise FileNotFoundError(
-        f"File '{filename}' not found in "
-        f"'{parquet_path.parent}'. "
-        f"Available files: {available}"
-    )
+    if not timestamp_flag:
+        parquet_path = output_dir / f"{base_filename}.parquet"
 
-    return pd.read_parquet(parquet_path)
+        if not parquet_path.exists():
+            available = sorted(p.name for p in output_dir.glob("*.parquet"))
+            raise FileNotFoundError(
+                f"File '{parquet_path.name}' not found in '{output_dir}'. "
+                f"Available files: {available}"
+            )
+
+        return pd.read_parquet(parquet_path)
+
+    if timestamp_value is not None:
+        try:
+            datetime.strptime(timestamp_value, "%Y%m%d_%H%M%S")
+        except ValueError as exc:
+            raise ValueError(
+                "timestamp_value must be in the format YYYYmmdd_HHMMSS."
+            ) from exc
+
+        parquet_path = output_dir / f"{base_filename}_{timestamp_value}.parquet"
+
+        if not parquet_path.exists():
+            available = sorted(p.name for p in output_dir.glob("*.parquet"))
+            raise FileNotFoundError(
+                f"File '{parquet_path.name}' not found in '{output_dir}'. "
+                f"Available files: {available}"
+            )
+
+        return pd.read_parquet(parquet_path)
+
+    pattern = re.compile(rf"^{re.escape(base_filename)}_(\d{{8}}_\d{{6}})\.parquet$")
+
+    candidates: list[tuple[datetime, Path]] = []
+
+    for parquet_file in output_dir.glob(f"{base_filename}_*.parquet"):
+        match = pattern.match(parquet_file.name)
+
+        if match:
+            timestamp_str = match.group(1)
+
+            try:
+                parsed_ts = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S")
+            except ValueError:
+                continue
+
+            candidates.append((parsed_ts, parquet_file))
+
+    if not candidates:
+        available = sorted(p.name for p in output_dir.glob("*.parquet"))
+        raise FileNotFoundError(
+            f"No files found matching "
+            f"'{base_filename}_<timestamp>.parquet' in '{output_dir}'. "
+            f"Available files: {available}"
+        )
+
+    latest_path = max(candidates, key=lambda entry: entry[0])[1]
+
+    return pd.read_parquet(latest_path)
 
 
 # PERSISTING DATA TO PARQUET
