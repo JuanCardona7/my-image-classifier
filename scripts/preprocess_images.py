@@ -7,6 +7,7 @@ from datetime import datetime
 from io import BytesIO
 from pathlib import Path
 from subprocess import run
+from tqdm.auto import tqdm
 
 import pandas as pd
 from PIL import Image, UnidentifiedImageError
@@ -37,6 +38,8 @@ The output is written to data/interim/images as timestamped Parquet shards
 using the naming pattern:
 
     raw_images_preprocessed_<image_size>_<timestamp>_shard_<n>.parquet
+    or if single shard / no shards
+    raw_images_preprocessed_<image_size>_<timestamp>.parque
 
 A JSON manifest is also saved with basic information about the generated files.
 """
@@ -222,7 +225,11 @@ def build_image_shard(
 
     records = []
 
-    for row in metadata_shard.itertuples(index=False):
+    for row in tqdm(
+        metadata_shard.itertuples(index=False),
+        total=len(metadata_shard),
+        desc="Resizing images",
+    ):
         image_bytes, scale_factor = resize_image_to_jpeg_bytes(
             image_path=row.image_path,
             image_size=image_size,
@@ -257,13 +264,18 @@ def save_image_parquet_shards(
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_paths: list[Path] = []
 
+    n_rows = len(metadata)
+
+    if n_rows == 0:
+        raise ValueError("Metadata is empty. No images to process.")
+
     if single_file:
-        shard_rows = len(metadata)
+        shard_rows = n_rows
 
     if shard_rows <= 0:
         raise ValueError("shard_rows must be greater than 0.")
 
-    n_rows = len(metadata)
+    is_final_single_file = single_file or n_rows <= shard_rows
 
     for shard_idx, start in enumerate(range(0, n_rows, shard_rows)):
         end = min(start + shard_rows, n_rows)
@@ -276,9 +288,6 @@ def save_image_parquet_shards(
             image_size=image_size,
             jpeg_quality=jpeg_quality,
         )
-
-        n_rows = len(metadata)
-        is_final_single_file = single_file or n_rows <= shard_rows
 
         if is_final_single_file:
             filename = f"{OUTPUT_BASENAME}_{image_size}_{timestamp}.parquet"
@@ -300,7 +309,7 @@ def save_image_parquet_shards(
         "image_size": image_size,
         "jpeg_quality": jpeg_quality,
         "n_rows": n_rows,
-        "single_file": single_file,
+        "single_file": is_final_single_file,
         "shard_rows": shard_rows,
         "n_files": len(output_paths),
         "files": [str(p) for p in output_paths],
@@ -329,6 +338,7 @@ def parse_args() -> argparse.Namespace:
         "--image-size",
         type=int,
         default=DEFAULT_IMAGE_SIZE,
+        choices=SUPPORTED_IMAGE_SIZES,
         help=f"Final square image size. Default: {DEFAULT_IMAGE_SIZE}.",
     )
 
