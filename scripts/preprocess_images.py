@@ -277,7 +277,10 @@ def save_image_parquet_shards(
             jpeg_quality=jpeg_quality,
         )
 
-        if single_file:
+        n_rows = len(metadata)
+        is_final_single_file = single_file or n_rows <= shard_rows
+
+        if is_final_single_file:
             filename = f"{OUTPUT_BASENAME}_{image_size}_{timestamp}.parquet"
         else:
             filename = (
