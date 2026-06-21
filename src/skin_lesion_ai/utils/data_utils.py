@@ -4,8 +4,11 @@ import re
 
 import pandas as pd
 import yaml
+import json
 
+# -----------------------------------
 # CONFIG PATH AND LOADING
+# -----------------------------------
 
 
 def get_project_root() -> Path:
@@ -30,7 +33,9 @@ def load_yaml_config(config_path: str | Path) -> dict:
         return yaml.safe_load(file)
 
 
+# -----------------------------------
 # LOADING DATA
+# -----------------------------------
 
 
 def load_raw_metadata(
@@ -161,7 +166,137 @@ def load_metadata_parquet(
     return pd.read_parquet(latest_path)
 
 
+def load_image_parquet(
+    image_size: int,
+    config_path: str | Path = "configs/data_config.yaml",
+    base_filename: str = "raw_images_preprocessed",
+    timestamp_value: str | None = None,
+    columns: list[str] | None = None,
+) -> pd.DataFrame:
+    """
+    Load preprocessed image Parquet file(s) from the interim images folder.
+
+    The function supports both:
+    - a single Parquet file:
+        raw_images_preprocessed_<image_size>_<timestamp>.parquet
+
+    - multiple Parquet shards:
+        raw_images_preprocessed_<image_size>_<timestamp>_shard_000.parquet
+        raw_images_preprocessed_<image_size>_<timestamp>_shard_001.parquet
+        ...
+
+    If timestamp_value is not provided, the latest valid timestamp is loaded.
+    If a manifest JSON exists, it is used to identify the files.
+    Otherwise, the function falls back to detecting files by filename pattern.
+    """
+
+    config = load_yaml_config(path(config_path))
+    image_dir = path(config["paths"]["interim"]["images"])
+
+    if not image_dir.exists():
+        raise FileNotFoundError(f"Image directory not found: {image_dir}")
+
+    base_filename = Path(base_filename).stem
+    prefix = f"{base_filename}_{image_size}"
+
+    if timestamp_value is not None:
+        try:
+            datetime.strptime(timestamp_value, "%Y%m%d_%H%M%S")
+        except ValueError as exc:
+            raise ValueError(
+                "timestamp_value must be in the format YYYYmmdd_HHMMSS."
+            ) from exc
+
+        selected_timestamp = timestamp_value
+
+    else:
+        manifest_pattern = re.compile(
+            rf"^{re.escape(prefix)}_(\d{{8}}_\d{{6}})_manifest\.json$"
+        )
+        single_file_pattern = re.compile(
+            rf"^{re.escape(prefix)}_(\d{{8}}_\d{{6}})\.parquet$"
+        )
+        shard_pattern = re.compile(
+            rf"^{re.escape(prefix)}_(\d{{8}}_\d{{6}})_shard_\d{{3}}\.parquet$"
+        )
+
+        candidates: list[tuple[datetime, str]] = []
+
+        for file in image_dir.glob(f"{prefix}_*"):
+            match = (
+                manifest_pattern.match(file.name)
+                or single_file_pattern.match(file.name)
+                or shard_pattern.match(file.name)
+            )
+
+            if match:
+                timestamp_str = match.group(1)
+
+                try:
+                    parsed_ts = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S")
+                except ValueError:
+                    continue
+
+                candidates.append((parsed_ts, timestamp_str))
+
+        if not candidates:
+            available = sorted(p.name for p in image_dir.glob("*"))
+            raise FileNotFoundError(
+                f"No image Parquet files found matching '{prefix}_<timestamp>' "
+                f"in '{image_dir}'. Available files: {available}"
+            )
+
+        selected_timestamp = max(candidates, key=lambda entry: entry[0])[1]
+
+    manifest_path = image_dir / f"{prefix}_{selected_timestamp}_manifest.json"
+
+    parquet_paths: list[Path] = []
+
+    if manifest_path.exists():
+        with manifest_path.open("r", encoding="utf-8") as file:
+            manifest = json.load(file)
+
+        for file_path in manifest.get("files", []):
+            parquet_path = Path(file_path)
+
+            if parquet_path.exists():
+                parquet_paths.append(parquet_path)
+            else:
+                fallback_path = image_dir / parquet_path.name
+
+                if fallback_path.exists():
+                    parquet_paths.append(fallback_path)
+
+    if not parquet_paths:
+        single_file_path = image_dir / f"{prefix}_{selected_timestamp}.parquet"
+
+        if single_file_path.exists():
+            parquet_paths = [single_file_path]
+        else:
+            parquet_paths = sorted(
+                image_dir.glob(f"{prefix}_{selected_timestamp}_shard_*.parquet")
+            )
+
+    if not parquet_paths:
+        available = sorted(p.name for p in image_dir.glob("*"))
+        raise FileNotFoundError(
+            f"No Parquet files found for '{prefix}_{selected_timestamp}'. "
+            f"Available files: {available}"
+        )
+
+    if len(parquet_paths) == 1:
+        return pd.read_parquet(parquet_paths[0], columns=columns)
+
+    dataframes = [
+        pd.read_parquet(parquet_path, columns=columns) for parquet_path in parquet_paths
+    ]
+
+    return pd.concat(dataframes, ignore_index=True)
+
+
+# -----------------------------------
 # PERSISTING DATA TO PARQUET
+# -----------------------------------
 
 
 def save_metadata_parquet(
