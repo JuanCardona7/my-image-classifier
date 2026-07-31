@@ -63,9 +63,6 @@ def split_stratified_group(df, col_grouping='patient_id', col_target='target_bio
 
 
 
-#
-# load_or_create_final_metadata function definition
-#
 
 def validation_split(df_base, train_df, test_df, val_df, col_grouping='patient_id', col_target='target_biopsy') -> None:
 
@@ -217,9 +214,7 @@ def validation_split(df_base, train_df, test_df, val_df, col_grouping='patient_i
         print("❌ Train + Test + Val != Preprocessed")
 
 
-#
-# load_or_create_final_metadata function definition
-#
+
 
 def load_or_create_final_metadata() -> pd.DataFrame:
     """Load latest final metadata file or generate it from raw data."""
@@ -247,7 +242,7 @@ def load_or_create_final_metadata() -> pd.DataFrame:
             timestamp_flag=True,
         )
 
-# provo
+
 def main() -> None:
 
     # Load the preprocessed data
