@@ -33,9 +33,9 @@ Default targets
 
 Example
 -------
-from skin_lesion_ai.inference.evaluation_validation import evaluate_validation
+from skin_lesion_ai.inference.evaluation_validation import evaluate
 
-results = evaluate_validation(
+results = evaluate(
     df_train_predictions=df_train_predictions,
     df_validation_predictions=df_validation_predictions,
     df_train=df_train,
@@ -72,6 +72,7 @@ model in the same folder.
 
 from __future__ import annotations
 
+import json
 import re
 from datetime import datetime
 from pathlib import Path
@@ -116,6 +117,11 @@ DEFAULT_LABEL_COLUMNS = {
 HYPOTHESIS_DESCRIPTIONS = {
     1: "Lesion recommended for biopsy",
     2: "Lesion suspected to be malignant",
+}
+
+HYPOTHESIS_CLASS_LABELS = {
+    1: ["No biopsy", "Biopsy"],
+    2: ["Not malignant", "Malignant"],
 }
 
 # Compact grid saved to CSV.
@@ -775,25 +781,26 @@ def _plot_precision_recall(
             y_true,
             y_prob,
         )
+
         pr_auc = auc(recall, precision)
+        split_prevalence = float(y_true.mean())
 
         ax.plot(
             recall,
             precision,
-            label=f"{split_name} (AUC = {pr_auc:.3f})",
+            label=f"{split_name} (PR-AUC = {pr_auc:.3f})",
             color=color,
             linewidth=2,
         )
 
-    validation_prevalence = validation_merged["y_true"].mean()
-
-    ax.axhline(
-        validation_prevalence,
-        linestyle="--",
-        linewidth=1.5,
-        color=STATISTIC_PALETTE["mean"],
-        label=(f"Validation prevalence ({validation_prevalence:.3f})"),
-    )
+        ax.axhline(
+            split_prevalence,
+            linestyle=":",
+            linewidth=1.5,
+            color=color,
+            alpha=0.8,
+            label=f"{split_name} prevalence ({split_prevalence:.3f})",
+        )
 
     ax.set_xlabel("Recall / Sensitivity")
     ax.set_ylabel("Precision / PPV")
@@ -851,7 +858,7 @@ def _plot_roc(
         ax.plot(
             fpr,
             tpr,
-            label=f"{split_name} (AUC = {roc_auc:.3f})",
+            label=f"{split_name} (ROC-AUC = {roc_auc:.3f})",
             color=color,
             linewidth=2,
         )
@@ -889,7 +896,7 @@ def _plot_combined_curves(
     model_name: str,
     run_directory: Path,
 ) -> Path:
-    """Save Precision-Recall and ROC curves in one figure."""
+    """Save train and validation Precision-Recall and ROC curves."""
     set_eda_style()
 
     fig, axes = plt.subplots(
@@ -913,20 +920,39 @@ def _plot_combined_curves(
         y_true = data["y_true"].to_numpy(dtype=int)
         y_prob = data["y_prob"].to_numpy(dtype=float)
 
+        # Precision-Recall curve
         precision, recall, _ = precision_recall_curve(
             y_true,
             y_prob,
         )
 
+        pr_auc = auc(recall, precision)
+        split_prevalence = float(y_true.mean())
+
         axes[0].plot(
             recall,
             precision,
-            label=(f"{split_name} (AUC = {auc(recall, precision):.3f})"),
+            label=f"{split_name} (PR-AUC = {pr_auc:.3f})",
             color=color,
             linewidth=2,
         )
 
+        axes[0].axhline(
+            split_prevalence,
+            linestyle=":",
+            linewidth=1.5,
+            color=color,
+            alpha=0.8,
+            label=f"{split_name} prevalence ({split_prevalence:.3f})",
+        )
+
+        # ROC curve
         fpr, tpr, _ = roc_curve(
+            y_true,
+            y_prob,
+        )
+
+        roc_auc = roc_auc_score(
             y_true,
             y_prob,
         )
@@ -934,20 +960,10 @@ def _plot_combined_curves(
         axes[1].plot(
             fpr,
             tpr,
-            label=(f"{split_name} (AUC = {roc_auc_score(y_true, y_prob):.3f})"),
+            label=f"{split_name} (ROC-AUC = {roc_auc:.3f})",
             color=color,
             linewidth=2,
         )
-
-    validation_prevalence = validation_merged["y_true"].mean()
-
-    axes[0].axhline(
-        validation_prevalence,
-        linestyle="--",
-        linewidth=1.5,
-        color=STATISTIC_PALETTE["mean"],
-        label=(f"Validation prevalence ({validation_prevalence:.3f})"),
-    )
 
     axes[0].set_xlabel("Recall / Sensitivity")
     axes[0].set_ylabel("Precision / PPV")
@@ -966,7 +982,7 @@ def _plot_combined_curves(
     )
 
     axes[1].set_xlabel("False Positive Rate")
-    axes[1].set_ylabel("Sensitivity")
+    axes[1].set_ylabel("Sensitivity / True Positive Rate")
     axes[1].set_title("ROC")
     axes[1].set_xlim(0, 1)
     axes[1].set_ylim(0, 1)
@@ -1018,6 +1034,8 @@ def _plot_clinical_summary(
         figsize=(11, 4.5),
     )
 
+    class_labels = HYPOTHESIS_CLASS_LABELS[hypothesis]
+
     sns.heatmap(
         matrix,
         annot=True,
@@ -1025,14 +1043,8 @@ def _plot_clinical_summary(
         cmap="Blues",
         cbar=False,
         ax=axes[0],
-        xticklabels=[
-            "No biopsy",
-            "Biopsy",
-        ],
-        yticklabels=[
-            "No biopsy",
-            "Biopsy",
-        ],
+        xticklabels=class_labels,
+        yticklabels=class_labels,
     )
 
     axes[0].set_xlabel("Predicted class")
@@ -1062,12 +1074,16 @@ def _plot_clinical_summary(
         alpha=EDA_STYLE["bar_alpha"],
     )
 
-    axes[1].axhline(
-        target_sensitivity,
+    sensitivity_bar = bars[0]
+
+    axes[1].hlines(
+        y=target_sensitivity,
+        xmin=sensitivity_bar.get_x(),
+        xmax=sensitivity_bar.get_x() + sensitivity_bar.get_width(),
         linestyle="--",
-        linewidth=1.5,
+        linewidth=2,
         color=STATISTIC_PALETTE["mean"],
-        label=(f"Target sensitivity ({target_sensitivity:.2f})"),
+        label=f"Target sensitivity ({target_sensitivity:.2f})",
     )
 
     axes[1].set_ylim(0, 1.05)
@@ -1115,7 +1131,7 @@ def save_evaluation_figures(
     model_name: str,
     run_directory: Path,
 ) -> dict[str, Path]:
-    """Create and save the four validation evaluation figures."""
+    """Create and save the train and validation evaluation figures."""
     return {
         "precision_recall_curve": _plot_precision_recall(
             train_merged=train_merged,
@@ -1150,6 +1166,98 @@ def save_evaluation_figures(
 # ---------------------------------------------------------------------
 # Output
 # ---------------------------------------------------------------------
+
+
+def _make_json_serializable(value):
+    """Convert NumPy and Path objects into JSON-compatible values."""
+    if isinstance(value, dict):
+        return {key: _make_json_serializable(item) for key, item in value.items()}
+
+    if isinstance(value, (list, tuple)):
+        return [_make_json_serializable(item) for item in value]
+
+    if isinstance(value, Path):
+        return str(value)
+
+    if isinstance(value, np.integer):
+        return int(value)
+
+    if isinstance(value, np.floating):
+        if np.isnan(value):
+            return None
+
+        return float(value)
+
+    return value
+
+
+def save_evaluation_metadata(
+    model_name: str,
+    hypothesis: int,
+    label_col: str,
+    target_sensitivity: float,
+    selected_threshold: float,
+    train_summary: dict[str, int | float],
+    validation_summary: dict[str, int | float],
+    train_threshold_free: dict[str, float],
+    validation_threshold_free: dict[str, float],
+    train_metrics: dict[str, float | int],
+    validation_metrics: dict[str, float | int],
+    config_path: str | Path,
+    csv_paths: dict[str, Path],
+    figure_paths: dict[str, Path],
+    run_directory: Path,
+) -> Path:
+    """Save metadata and main evaluation results as JSON."""
+    metadata = {
+        "created_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "model": {
+            "model_name": model_name,
+            "hypothesis": hypothesis,
+            "hypothesis_description": HYPOTHESIS_DESCRIPTIONS[hypothesis],
+            "label_column": label_col,
+        },
+        "evaluation": {
+            "threshold_selection_split": "validation",
+            "threshold_applied_to": [
+                "train",
+                "validation",
+            ],
+            "target_sensitivity": target_sensitivity,
+            "selected_threshold": selected_threshold,
+            "config_path": _resolve_project_path(config_path),
+        },
+        "train": {
+            "dataset_summary": train_summary,
+            "threshold_free_metrics": train_threshold_free,
+            "threshold_metrics": train_metrics,
+        },
+        "validation": {
+            "dataset_summary": validation_summary,
+            "threshold_free_metrics": validation_threshold_free,
+            "threshold_metrics": validation_metrics,
+        },
+        "outputs": {
+            "output_directory": run_directory,
+            "csv_files": csv_paths,
+            "figure_files": figure_paths,
+        },
+    }
+
+    metadata_path = run_directory / "evaluation_metadata.json"
+
+    with metadata_path.open(
+        "w",
+        encoding="utf-8",
+    ) as file:
+        json.dump(
+            _make_json_serializable(metadata),
+            file,
+            indent=2,
+            ensure_ascii=False,
+        )
+
+    return metadata_path
 
 
 def save_validation_outputs(
@@ -1483,6 +1591,24 @@ def evaluate(
         run_directory=run_directory,
     )
 
+    metadata_path = save_evaluation_metadata(
+        model_name=model_name,
+        hypothesis=hypothesis,
+        label_col=resolved_label_col,
+        target_sensitivity=target_sensitivity,
+        selected_threshold=selected_threshold,
+        train_summary=train_summary,
+        validation_summary=validation_summary,
+        train_threshold_free=train_threshold_free,
+        validation_threshold_free=validation_threshold_free,
+        train_metrics=train_threshold_metrics,
+        validation_metrics=validation_threshold_metrics,
+        config_path=config_path,
+        csv_paths=csv_paths,
+        figure_paths=figure_paths,
+        run_directory=run_directory,
+    )
+
     print_validation_summary(
         model_name=model_name,
         hypothesis=hypothesis,
@@ -1504,4 +1630,5 @@ def evaluate(
         "output_directory": run_directory,
         "csv_paths": csv_paths,
         "figure_paths": figure_paths,
+        "metadata_path": metadata_path,
     }
