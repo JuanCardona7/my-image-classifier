@@ -23,3 +23,5 @@ paths:
   external:
     images: data/external/images
     metadata: data/external/metadata
+
+  models: data/models
