@@ -1,12 +1,9 @@
-
 import sys
 from subprocess import run
 
-import pandas as pd
 import numpy as np
-
+import pandas as pd
 from sklearn.model_selection import StratifiedGroupKFold
-
 
 from skin_lesion_ai.utils.data_utils import (
     get_project_root,
@@ -15,209 +12,220 @@ from skin_lesion_ai.utils.data_utils import (
 )
 
 
-def split_stratified_group(df, col_grouping='patient_id', col_target='target_biopsy', test_val_size=0.2, random_state=42):
-    """
-    Split data by patient_id to avoid data leakage while maintaining stratification of the target variable.
-    
-    Parameters:
-    -----------
-    df : pandas DataFrame
-        The full dataset
-    col_grouping : str
-        Name of the column to group by (e.g., patient_id)
-    col_target : str
-        Name of the target column
-    test_val_size : float
-        Proportion of cases to include in test_val set that later will be split into test and validation sets
-    random_state : int
-        Random seed for reproducibility
-    
-    Returns:
-    --------
-    main_df, second_df : pandas DataFrames
-        Splits of the original dataframe
-    main_inds, second_inds : numpy arrays
-        Indices of the main and second splits
-    """
-    # Calculamos los 'folds' necesarios para sacar el ratio que nos interesa
-    desired = 1.0 / test_val_size
-    n_folds = int(np.round(desired) )
-
-    # Usamos la funcion StratifiedGroupKFold para hacer un spliter con el que haremos el split
-    splitter = StratifiedGroupKFold(n_splits=n_folds,
-                                  shuffle=True,
-                                  random_state = random_state)
-    
-    
-    # Split patients en train y test sets
-    split = splitter.split(X=df,
-                           y=df[col_target],
-                           groups=df[col_grouping])
-    main_inds, second_inds = next(split)
-    
-    # Creamos los df segun los indexs obtenidos para cada split
-    main_df = df.iloc[main_inds]
-    second_df = df.iloc[second_inds]
-
-    return main_df, second_df, main_inds, second_inds
+GROUP_COLUMN = "patient_id"
+LESION_ID_COLUMN = "isic_id"
 
 
+def split_stratified_group(
+    df: pd.DataFrame,
+    target_column: str,
+    second_split_size: float,
+    random_state: int,
+    group_column: str = GROUP_COLUMN,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Split a dataframe by patient while stratifying the selected target."""
+
+    n_splits = int(round(1 / second_split_size))
+
+    if not np.isclose(second_split_size, 1 / n_splits):
+        raise ValueError(
+            "second_split_size must correspond to one complete fold "
+            "of StratifiedGroupKFold."
+        )
+
+    splitter = StratifiedGroupKFold(
+        n_splits=n_splits,
+        shuffle=True,
+        random_state=random_state,
+    )
+
+    main_indices, second_indices = next(
+        splitter.split(
+            X=df,
+            y=df[target_column],
+            groups=df[group_column],
+        )
+    )
+
+    return (
+        df.iloc[main_indices].copy(),
+        df.iloc[second_indices].copy(),
+    )
 
 
-def validation_split(df_base, train_df, test_df, val_df, col_grouping='patient_id', col_target='target_biopsy') -> None:
+def create_train_val_test_split(
+    df: pd.DataFrame,
+    target_column: str,
+    random_state: int,
+) -> dict[str, pd.DataFrame]:
+    """Create an independent 80/10/10 train, validation and test split."""
 
-    """""
-    Validate train, test and validation splits
+    train_df, test_val_df = split_stratified_group(
+        df=df,
+        target_column=target_column,
+        second_split_size=0.2,
+        random_state=random_state,
+    )
 
-    Parameters:
-    -----------
-    df_base : pandas DataFrame
-        The original dataset
-    train_df : pandas DataFrame
-        Training set
-    test_df : pandas DataFrame
-        Test set
-    val_df : pandas DataFrame
-        Validation set
-    col_grouping : str
-        Name of the column to group by (e.g., patient_id)
-    col_target : str
-        Name of the target column
+    test_df, val_df = split_stratified_group(
+        df=test_val_df,
+        target_column=target_column,
+        second_split_size=0.5,
+        random_state=random_state,
+    )
 
-    """""
-    # Check all sets length
-    print(f"Base set: {len(df_base)} samples")
-    print(f"Train set: {len(train_df)} samples")
-    print(f"Test set: {len(test_df)} samples")
-    print(f"Val set: {len(val_df)} samples")
-
-    # Percentage of the original dataset
-    print(f"Train set: {len(train_df)*100/len(df_base):.2f}% samples")
-    print(f"Test set: {len(test_df)*100/len(df_base):.2f}% samples")
-    print(f"Val set: {len(val_df)*100/len(df_base):.2f}% samples")
+    return {
+        "train": train_df,
+        "val": val_df,
+        "test": test_df,
+    }
 
 
-    # Group check overlaps
+def validate_input_data(df: pd.DataFrame) -> None:
+    """Validate the columns and identifiers required to generate both splits."""
 
-    df_overlap1 = pd.merge(train_df, test_df,how="inner", on=[col_grouping,col_grouping])
-    print(f"Train ∩ Test overlap: {len(df_overlap1)} patients")
+    required_columns = {
+        LESION_ID_COLUMN,
+        GROUP_COLUMN,
+        "target_biopsy",
+        "target_malignant",
+    }
 
-    df_overlap2 = pd.merge(val_df, test_df,how="inner", on=[col_grouping,col_grouping])
-    print(f"Validation ∩ Test overlap: {len(df_overlap2)} patients")
+    missing_columns = required_columns.difference(df.columns)
 
-    df_overlap3 = pd.merge(val_df, train_df,how="inner", on=[col_grouping,col_grouping])
-    print(f"Validation ∩ Train overlap: {len(df_overlap3)} patients")
+    if missing_columns:
+        raise ValueError(f"Missing required columns: {sorted(missing_columns)}")
 
-    if (len(df_overlap1)) + len(df_overlap2) + len(df_overlap3) == 0:
-        print("✅ No patient overlap")
-    else:
-        print("❌ Patient overlap detected")
+    if df[LESION_ID_COLUMN].isna().any():
+        raise ValueError(f"{LESION_ID_COLUMN} contains missing values.")
 
+    if not df[LESION_ID_COLUMN].is_unique:
+        raise ValueError(f"{LESION_ID_COLUMN} must be unique.")
 
-    # Checkear stratificacion de nuestro split
+    if df[GROUP_COLUMN].isna().any():
+        raise ValueError(f"{GROUP_COLUMN} contains missing values.")
 
-    df_base_y = df_base[col_target].value_counts()
-    train_y = train_df[col_target].value_counts()
-    test_y = test_df[col_target].value_counts()
-    val_y = val_df[col_target].value_counts()
+    if df["target_biopsy"].isna().any():
+        raise ValueError("target_biopsy contains missing values.")
 
-    print(f"Preprocessed_df {col_target} samples count:\n {df_base_y[0]} with value '0' \n {df_base_y[1]} with value '1' \n")
-    print(f"As percentatge:\n {100*df_base_y[0]/len(df_base):.2f}% with value '0' \n {100*df_base_y[1]/len(df_base):.2f}% with value '1' \n" )
+    if not df["target_biopsy"].isin([0, 1]).all():
+        raise ValueError("target_biopsy must contain only 0 and 1.")
 
-    print("\nAfter our split we have: \n")
+    h2_mask = df["target_malignant"].notna()
 
-    print(f"Train_df {col_target} samples count:\n {train_y[0]} with value '0' \n {train_y[1]} with value '1' \n")
-    print(f"As percentatge:\n {100*train_y[0]/len(train_df):.2f}% with value '0' \n {100*train_y[1]/len(train_df):.2f}% with value '1' \n" )
+    if not h2_mask.any():
+        raise ValueError("No lesions are available for hypothesis 2.")
 
-    print(f"Test_df {col_target} samples count:\n {test_y[0]} with value '0' \n {test_y[1]} with value '1' \n")
-    print(f"As percentatge:\n {100*test_y[0]/len(test_df):.2f}% with value '0' \n {100*test_y[1]/len(test_df):.2f}% with value '1' \n" )
+    if not df.loc[h2_mask, "target_malignant"].isin([0, 1]).all():
+        raise ValueError("target_malignant must contain only 0, 1 or NA.")
 
-    print(f"Val_df {col_target} samples count:\n {val_y[0]} with value '0' \n {val_y[1]} with value '1' \n")
-    print(f"As percentatge:\n {100*val_y[0]/len(val_df):.2f}% with value '0' \n {100*val_y[1]/len(val_df):.2f}% with value '1' \n" )
-
-    # Checkear stratification para cada split en % hasta 1 decimal
-
-    if np.round(100*df_base_y[0]/len(df_base), 1) == np.round(100*train_y[0]/len(train_df), 1):
-        print("✅ Stratification maintained for value '0' in train set")
-    else:
-        print("❌ Stratification not maintained for value '0' in train set")
-
-    if np.round(100*df_base_y[1]/len(df_base), 1) == np.round(100*train_y[1]/len(train_df), 1):
-        print("✅ Stratification maintained for value '1' in train set")
-    else:
-        print("❌ Stratification not maintained for value '1' in train set")
-
-    # Check stratification for test set
-    if np.round(100*df_base_y[0]/len(df_base), 1) == np.round(100*test_y[0]/len(test_df), 1):
-        print("✅ Stratification maintained for value '0' in test set")
-    else:
-        print("❌ Stratification not maintained for value '0' in test set")
-
-    if np.round(100*df_base_y[1]/len(df_base), 1) == np.round(100*test_y[1]/len(test_df), 1):
-        print("✅ Stratification maintained for value '1' in test set")
-    else:
-        print("❌ Stratification not maintained for value '1' in test set")
-
-    # Check stratification for validation set
-    if np.round(100*df_base_y[0]/len(df_base), 1) == np.round(100*val_y[0]/len(val_df), 1):
-        print("✅ Stratification maintained for value '0' in validation set")
-    else:
-        print("❌ Stratification not maintained for value '0' in validation set")
-
-    if np.round(100*df_base_y[1]/len(df_base), 1) == np.round(100*val_y[1]/len(val_df), 1):
-        print("✅ Stratification maintained for value '1' in validation set")
-    else:
-        print("❌ Stratification not maintained for value '1' in validation set")
+    if not df.loc[h2_mask, "target_biopsy"].eq(1).all():
+        raise ValueError(
+            "All lesions with target_malignant must also have target_biopsy equal to 1."
+        )
 
 
-    # Numero de lesiones en cada split y porcentaje del original (preprocessed)
-    print(f"Preprocessed set:\n {df_base['isic_id'].nunique()} lesions\n")
+def validate_split(
+    df_base: pd.DataFrame,
+    splits: dict[str, pd.DataFrame],
+    target_column: str,
+    hypothesis: str,
+    size_tolerance: float = 0.02,
+    prevalence_tolerance: float = 0.02,
+) -> None:
+    """Validate coverage, class balance and absence of data leakage."""
 
-    print(f"Train set:\n {train_df['isic_id'].nunique()} lesions")
-    print(f" {100*train_df['isic_id'].nunique()/df_base['isic_id'].nunique()} % \nof preprocessed set\n")
+    expected_proportions = {
+        "train": 0.80,
+        "val": 0.10,
+        "test": 0.10,
+    }
 
-    print(f"Test set:\n {test_df['isic_id'].nunique()} lesions")
-    print(f" {100*test_df['isic_id'].nunique()/df_base['isic_id'].nunique()} % \nof preprocessed set\n")
+    patient_sets = {
+        name: set(split_df[GROUP_COLUMN]) for name, split_df in splits.items()
+    }
 
-    print(f"Validation set:\n {val_df['isic_id'].nunique()} lesions")
-    print(f" {100*val_df['isic_id'].nunique()/df_base['isic_id'].nunique()} % \nof preprocessed set\n")
+    lesion_sets = {
+        name: set(split_df[LESION_ID_COLUMN]) for name, split_df in splits.items()
+    }
 
-    # se cumple igualdad de train + test + val = preprocessed
-    print(f"Total lesions in splits: {train_df['isic_id'].nunique() + test_df['isic_id'].nunique() + val_df['isic_id'].nunique()} lesions")
-    print(f"Preprocessed lesions: {df_base['isic_id'].nunique()} lesions")
+    split_pairs = [
+        ("train", "val"),
+        ("train", "test"),
+        ("val", "test"),
+    ]
 
-    if train_df['isic_id'].nunique() + test_df['isic_id'].nunique() + val_df['isic_id'].nunique() == df_base['isic_id'].nunique():
-        print("✅ Train + Test + Val = Preprocessed")
-    else:
-        print("❌ Train + Test + Val != Preprocessed")
+    for first, second in split_pairs:
+        if patient_sets[first].intersection(patient_sets[second]):
+            raise ValueError(
+                f"{hypothesis}: patient leakage between {first} and {second}."
+            )
 
+        if lesion_sets[first].intersection(lesion_sets[second]):
+            raise ValueError(
+                f"{hypothesis}: lesion overlap between {first} and {second}."
+            )
 
-    # Numero de pacientes en cada split
-    print(f"Preprocessed set:\n {df_base[col_grouping].nunique()} patients\n")
+    all_split_lesions = set().union(*lesion_sets.values())
+    all_base_lesions = set(df_base[LESION_ID_COLUMN])
 
-    print(f"Train set:\n {train_df[col_grouping].nunique()} patients")
-    print(f" {100*train_df[col_grouping].nunique()/df_base[col_grouping].nunique()} % \nof preprocessed set\n")
+    if all_split_lesions != all_base_lesions:
+        raise ValueError(
+            f"{hypothesis}: some lesions are missing or assigned incorrectly."
+        )
 
-    print(f"Test set:\n {test_df[col_grouping].nunique()} patients")
-    print(f" {100*test_df[col_grouping].nunique()/df_base[col_grouping].nunique()} % \nof preprocessed set\n")
+    base_prevalence = df_base[target_column].mean()
 
-    print(f"Validation set:\n {val_df[col_grouping].nunique()} patients")
-    print(f" {100*val_df[col_grouping].nunique()/df_base[col_grouping].nunique()} % \nof preprocessed set\n")
+    print(f"\n{hypothesis} split validation")
+    print("-" * (len(hypothesis) + 17))
+    print(
+        f"Base: {len(df_base):,} lesions | "
+        f"{df_base[GROUP_COLUMN].nunique():,} patients | "
+        f"positive rate: {base_prevalence:.4%}"
+    )
 
-    # Se cumple igualdad de train + test + val = preprocessed
-    print(f"Total patients in splits: {train_df[col_grouping].nunique() + test_df[col_grouping].nunique() + val_df[col_grouping].nunique()} patients")
-    print(f"Preprocessed patients: {df_base[col_grouping].nunique()} patients")
+    for name in ("train", "val", "test"):
+        split_df = splits[name]
 
-    if train_df[col_grouping].nunique() + test_df[col_grouping].nunique() + val_df[col_grouping].nunique() == df_base[col_grouping].nunique():
-        print("✅ Train + Test + Val = Preprocessed")
-    else:
-        print("❌ Train + Test + Val != Preprocessed")
+        actual_proportion = len(split_df) / len(df_base)
+        split_prevalence = split_df[target_column].mean()
 
+        class_counts = (
+            split_df[target_column]
+            .astype(int)
+            .value_counts()
+            .reindex([0, 1], fill_value=0)
+        )
 
+        if abs(actual_proportion - expected_proportions[name]) > size_tolerance:
+            raise ValueError(
+                f"{hypothesis}: {name} size is outside the allowed tolerance."
+            )
+
+        if class_counts.eq(0).any():
+            raise ValueError(
+                f"{hypothesis}: {name} does not contain both target classes."
+            )
+
+        if abs(split_prevalence - base_prevalence) > prevalence_tolerance:
+            raise ValueError(
+                f"{hypothesis}: {name} target prevalence is outside "
+                "the allowed tolerance."
+            )
+
+        print(
+            f"{name}: {len(split_df):,} lesions "
+            f"({actual_proportion:.2%}) | "
+            f"{split_df[GROUP_COLUMN].nunique():,} patients | "
+            f"0/1: {class_counts[0]:,}/{class_counts[1]:,} | "
+            f"positive rate: {split_prevalence:.4%}"
+        )
+
+    print(f"{hypothesis}: validation passed.")
 
 
 def load_or_create_final_metadata() -> pd.DataFrame:
-    """Load latest final metadata file or generate it from raw data."""
+    """Load the latest final metadata file or generate it from raw data."""
 
     repo_root = get_project_root()
     script_path = repo_root / "scripts" / "final_preprocess_data.py"
@@ -230,6 +238,11 @@ def load_or_create_final_metadata() -> pd.DataFrame:
         )
 
     except FileNotFoundError:
+        print(
+            "No final_preprocessed_from_raw parquet was found. "
+            "Running final_preprocess_data.py..."
+        )
+
         run(
             [sys.executable, str(script_path)],
             cwd=str(repo_root),
@@ -243,54 +256,82 @@ def load_or_create_final_metadata() -> pd.DataFrame:
         )
 
 
-def main() -> None:
+def save_splits(
+    splits: dict[str, pd.DataFrame],
+    hypothesis: str,
+) -> None:
+    """Save train, validation and test metadata using the project convention."""
 
-    # Load the preprocessed data
+    for split_name, split_df in splits.items():
+        output_path = save_metadata_parquet(
+            split_df,
+            stage="processed",
+            name=f"{split_name}_split_{hypothesis.lower()}",
+            timestamp=True,
+        )
+
+        print(f"{hypothesis} {split_name} saved to: {output_path}")
+
+
+def main() -> None:
+    """Generate, validate and save independent splits for H1 and H2."""
+
     df_preprocessed = load_or_create_final_metadata()
+
     print(f"Final preprocessed metadata loaded: {df_preprocessed.shape}")
 
-    # split train test-val
-    train_df, test_val_df, train_inds, test_val_inds = split_stratified_group(
-        df_preprocessed,
-        col_grouping='patient_id',
-        col_target='target_biopsy',
-        test_val_size=0.2,
-        random_state=42
+    validate_input_data(df_preprocessed)
+
+    # H1 uses all lesions and keeps only the biopsy target.
+    df_h1 = df_preprocessed.drop(columns="target_malignant").copy()
+
+    df_h1["target_biopsy"] = df_h1["target_biopsy"].astype("int8")
+
+    # H2 uses only lesions with a known malignancy label
+    # and keeps only the malignancy target.
+    df_h2 = (
+        df_preprocessed.loc[df_preprocessed["target_malignant"].notna()]
+        .drop(columns="target_biopsy")
+        .copy()
     )
 
-    # split test-val
-    test_df, val_df, test_inds, val_inds = split_stratified_group(
-        test_val_df,
-        col_grouping='patient_id',
-        col_target='target_biopsy',
-        test_val_size=0.5,
-        random_state=42
+    df_h2["target_malignant"] = df_h2["target_malignant"].astype("int8")
+
+    h1_splits = create_train_val_test_split(
+        df=df_h1,
+        target_column="target_biopsy",
+        random_state=42,
     )
 
-    # Validate the splits
-    validation_split(df_preprocessed, train_df, test_df, val_df, 
-                     col_grouping='patient_id', 
-                     col_target='target_biopsy')
-
-    
-    # Save the splits and index
-    train_path = save_metadata_parquet(train_df, stage="processed", name="train_split", timestamp=True)
-    test_path = save_metadata_parquet(test_df, stage="processed", name="test_split", timestamp=True)
-    val_path = save_metadata_parquet(val_df, stage="processed", name="val_split", timestamp=True)
-
-    print(f"Train saved to: {train_path}")
-    print(f"Test saved to: {test_path}")
-    print(f"Validation saved to: {val_path}")
-
-    split_indices_path = save_metadata_parquet(
-        pd.DataFrame({"train_indices": pd.Series(train_inds), "test_val_indices": pd.Series(test_val_inds),
-                        "test_indices": pd.Series(test_inds), "val_indices": pd.Series(val_inds)}),
-        stage="interim",
-        name="split_indices",
-        timestamp=True,
+    validate_split(
+        df_base=df_h1,
+        splits=h1_splits,
+        target_column="target_biopsy",
+        hypothesis="H1",
     )
 
-    print(f"Split indices saved to: {split_indices_path}")
+    h2_splits = create_train_val_test_split(
+        df=df_h2,
+        target_column="target_malignant",
+        random_state=37,
+    )
+
+    validate_split(
+        df_base=df_h2,
+        splits=h2_splits,
+        target_column="target_malignant",
+        hypothesis="H2",
+    )
+
+    save_splits(
+        splits=h1_splits,
+        hypothesis="H1",
+    )
+
+    save_splits(
+        splits=h2_splits,
+        hypothesis="H2",
+    )
 
 
 if __name__ == "__main__":
