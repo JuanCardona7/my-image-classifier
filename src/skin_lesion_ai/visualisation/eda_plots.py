@@ -2,8 +2,11 @@ from datetime import datetime
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
+from matplotlib.gridspec import GridSpec
 from matplotlib.ticker import PercentFormatter
+from sklearn.metrics import auc, precision_recall_curve, roc_auc_score, roc_curve
 
 
 # ---------------------------------------------------------------------
@@ -292,3 +295,239 @@ def apply_label_mapping(series, mapping: dict):
     Replace raw category values by display labels.
     """
     return series.map(mapping).fillna(series)
+
+
+# ---------------------------------------------------------------------
+# Model evaluation plots
+# ---------------------------------------------------------------------
+
+
+def save_validation_evaluation_plots(
+    train_data,
+    validation_data,
+    selected_threshold: float,
+    target_sensitivity: float,
+    output_dir: str | Path,
+) -> dict[str, Path]:
+    """Save the four standard train/validation evaluation figures.
+
+    Both dataframes must contain ``y_true`` and ``y_prob``. The clinical
+    summary uses validation only because the operating threshold is selected
+    on that split.
+    """
+    set_eda_style()
+    output_dir = Path(output_dir)
+
+    train_color = PREDICTIVE_PALETTE["hypothesis_1"]
+    validation_color = PREDICTIVE_PALETTE["hypothesis_2"]
+    split_data = (
+        ("Train", train_data, train_color),
+        ("Validation", validation_data, validation_color),
+    )
+
+    def save_direct(fig, name: str) -> Path:
+        path = save_plot(
+            fig=fig,
+            name=name,
+            subfolder="",
+            plots_dir=output_dir,
+            extension="jpg",
+            add_timestamp=False,
+        )
+        plt.close(fig)
+        return path
+
+    # 1. Precision-Recall curve
+    fig_pr, ax_pr = plt.subplots(figsize=EDA_STYLE["figure_size"])
+    for split_name, data, color in split_data:
+        precision, recall, _ = precision_recall_curve(data["y_true"], data["y_prob"])
+        score = auc(recall, precision)
+        ax_pr.plot(
+            recall,
+            precision,
+            color=color,
+            linewidth=2,
+            label=f"{split_name} (PR-AUC = {score:.3f})",
+        )
+
+    validation_prevalence = validation_data["y_true"].mean()
+    ax_pr.axhline(
+        validation_prevalence,
+        color="#777777",
+        linestyle="--",
+        linewidth=1.2,
+        label=f"Validation baseline = {validation_prevalence:.3f}",
+    )
+    ax_pr.set(
+        xlabel="Recall (sensitivity)",
+        ylabel="Precision (PPV)",
+        title="Precision-Recall curve",
+        xlim=(0, 1),
+        ylim=(0, 1.02),
+    )
+    ax_pr.legend(loc="best")
+    pr_path = save_direct(fig_pr, "precision_recall_curve")
+
+    # Common validation operating-point metrics
+    y_true = validation_data["y_true"].to_numpy(dtype=int)
+    y_prob = validation_data["y_prob"].to_numpy(dtype=float)
+    y_pred = (y_prob >= selected_threshold).astype(int)
+
+    tp = int(((y_true == 1) & (y_pred == 1)).sum())
+    tn = int(((y_true == 0) & (y_pred == 0)).sum())
+    fp = int(((y_true == 0) & (y_pred == 1)).sum())
+    fn = int(((y_true == 1) & (y_pred == 0)).sum())
+
+    sensitivity = tp / (tp + fn)
+    specificity = tn / (tn + fp)
+    ppv = tp / (tp + fp) if (tp + fp) else np.nan
+    npv = tn / (tn + fn) if (tn + fn) else np.nan
+
+    # 2. ROC curve
+    fig_roc, ax_roc = plt.subplots(figsize=EDA_STYLE["figure_size"])
+    for split_name, data, color in split_data:
+        fpr, tpr, _ = roc_curve(data["y_true"], data["y_prob"])
+        score = roc_auc_score(data["y_true"], data["y_prob"])
+        ax_roc.plot(
+            fpr,
+            tpr,
+            color=color,
+            linewidth=2,
+            label=f"{split_name} (ROC-AUC = {score:.3f})",
+        )
+
+    ax_roc.scatter(
+        1 - specificity,
+        sensitivity,
+        color=validation_color,
+        edgecolor="black",
+        s=65,
+        zorder=4,
+        label=f"Selected threshold = {selected_threshold:.3f}",
+    )
+    ax_roc.plot([0, 1], [0, 1], linestyle="--", color="#777777", linewidth=1.2)
+    ax_roc.set(
+        xlabel="False positive rate",
+        ylabel="Sensitivity",
+        title="ROC curve",
+        xlim=(0, 1),
+        ylim=(0, 1.02),
+    )
+    ax_roc.legend(loc="lower right")
+    roc_path = save_direct(fig_roc, "roc_curve")
+
+    # 3. Combined PR and ROC figure
+    fig_combined, axes = plt.subplots(1, 2, figsize=(12, 4.5))
+    for split_name, data, color in split_data:
+        precision, recall, _ = precision_recall_curve(data["y_true"], data["y_prob"])
+        axes[0].plot(
+            recall,
+            precision,
+            color=color,
+            linewidth=2,
+            label=f"{split_name} ({auc(recall, precision):.3f})",
+        )
+
+        fpr, tpr, _ = roc_curve(data["y_true"], data["y_prob"])
+        axes[1].plot(
+            fpr,
+            tpr,
+            color=color,
+            linewidth=2,
+            label=f"{split_name} ({roc_auc_score(data['y_true'], data['y_prob']):.3f})",
+        )
+
+    axes[0].axhline(
+        validation_prevalence,
+        color="#777777",
+        linestyle="--",
+        linewidth=1.2,
+        label=f"Baseline ({validation_prevalence:.3f})",
+    )
+    axes[0].set(
+        xlabel="Recall (sensitivity)",
+        ylabel="Precision (PPV)",
+        title="Precision-Recall",
+        xlim=(0, 1),
+        ylim=(0, 1.02),
+    )
+    axes[0].legend(loc="best")
+
+    axes[1].plot([0, 1], [0, 1], linestyle="--", color="#777777", linewidth=1.2)
+    axes[1].scatter(
+        1 - specificity,
+        sensitivity,
+        color=validation_color,
+        edgecolor="black",
+        s=60,
+        zorder=4,
+        label=f"Threshold ({selected_threshold:.3f})",
+    )
+    axes[1].set(
+        xlabel="False positive rate",
+        ylabel="Sensitivity",
+        title="ROC",
+        xlim=(0, 1),
+        ylim=(0, 1.02),
+    )
+    axes[1].legend(loc="lower right")
+    fig_combined.tight_layout()
+    combined_path = save_direct(fig_combined, "pr_roc_curves")
+
+    # 4. Validation clinical summary
+    fig_summary = plt.figure(figsize=EDA_STYLE["wide_figure_size"])
+    grid = GridSpec(1, 2, figure=fig_summary, width_ratios=[1.15, 1])
+    ax_matrix = fig_summary.add_subplot(grid[0, 0])
+    ax_metrics = fig_summary.add_subplot(grid[0, 1])
+
+    sns.heatmap(
+        np.array([[tn, fp], [fn, tp]]),
+        annot=True,
+        fmt=",d",
+        cmap="Blues",
+        cbar=False,
+        linewidths=0.8,
+        linecolor="white",
+        xticklabels=["Negative", "Positive"],
+        yticklabels=["Negative", "Positive"],
+        ax=ax_matrix,
+    )
+    ax_matrix.set(
+        xlabel="Predicted class",
+        ylabel="True class",
+        title="Validation confusion matrix",
+    )
+
+    ax_metrics.axis("off")
+    ax_metrics.set_title("Clinical operating point")
+    ax_metrics.text(
+        0.05,
+        0.95,
+        (
+            f"Selected threshold\n{selected_threshold:.4f}\n\n"
+            f"Target sensitivity\n≥ {target_sensitivity:.1%}\n\n"
+            f"Sensitivity\n{sensitivity:.2%}\n\n"
+            f"Specificity\n{specificity:.2%}\n\n"
+            f"PPV\n{ppv:.2%}\n\n"
+            f"NPV\n{npv:.2%}"
+        ),
+        transform=ax_metrics.transAxes,
+        ha="left",
+        va="top",
+        fontsize=EDA_STYLE["label_size"],
+        bbox={
+            "boxstyle": "round,pad=0.6",
+            "facecolor": "white",
+            "edgecolor": validation_color,
+            "linewidth": 1.5,
+        },
+    )
+    fig_summary.tight_layout()
+    summary_path = save_direct(fig_summary, "clinical_summary")
+
+    return {
+        "precision_recall_curve": pr_path,
+        "roc_curve": roc_path,
+        "pr_roc_curves": combined_path,
+        "clinical_summary": summary_path,
+    }
