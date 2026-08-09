@@ -1,8 +1,63 @@
-"""Evaluate binary lesion-classification models on train and validation data.
+"""Save and evaluate binary lesion-classification models.
 
-HOW TO USE
+QUICK PIPELINE
+--------------
+from skin_lesion_ai.inference.evaluation_validation import (
+    evaluate,
+    save_model,
+)
+
+# 1. Train model
+model.fit(...)
+
+# 2. Save trained model and create its directory
+model_directory = save_model(
+    model=model,
+    model_name="xgboost_metadata",
+    model_type=1,
+)
+
+# 3. Generate train and validation probabilities
+...
+
+# 4. Evaluate in the SAME directory
+results = evaluate(
+    df_train_predictions=df_train_predictions,
+    df_validation_predictions=df_validation_predictions,
+    df_train=df_train,
+    df_validation=df_validation,
+    hypothesis=1,
+    model_directory=model_directory,
+    target_sensitivity=0.95,
+)
+
+display(results["summary"])
+print(f"Results saved in: {results['output_directory']}")
+
+
+SAVE MODEL
 ----------
-The main function requires four dataframes:
+save_model() creates one model-specific run directory inside the models path
+defined in configs/data_config.yaml. It saves the trained model and creates
+model_metadata.json.
+
+model_type:
+- 1 = scikit-learn / joblib-compatible model
+- 2 = PyTorch model
+- 3 = Keras model
+
+Saved model files:
+- scikit-learn: model.joblib
+- PyTorch: model_state_dict.pt
+- Keras: model.keras
+
+For PyTorch, only the model state_dict is saved. The model architecture must
+therefore remain available in the codebase when loading the saved weights.
+
+
+EVALUATE
+--------
+evaluate() requires four dataframes:
 
 1. df_train_predictions
    One row per train lesion with:
@@ -23,6 +78,9 @@ The main function requires four dataframes:
 4. df_validation
    Validation split with the same required columns.
 
+evaluate() receives the directory previously returned by save_model(). All
+evaluation outputs are saved in that same directory.
+
 Default targets
 ---------------
 - Hypothesis 1: target_biopsy
@@ -31,32 +89,31 @@ Default targets
 - Hypothesis 2: target_malignant
   Positive class = lesion suspected to be malignant.
 
-Example
--------
-from skin_lesion_ai.inference.evaluation_validation import evaluate
-
-results = evaluate(
-    df_train_predictions=df_train_predictions,
-    df_validation_predictions=df_validation_predictions,
-    df_train=df_train,
-    df_validation=df_validation,
-    hypothesis=1,
-    model_name="xgboost_metadata",
-    target_sensitivity=0.95,
-)
-
-display(results["summary"])
-
-model_directory = results["output_directory"]
-print(f"Results saved in: {model_directory}")
-
-The selected threshold is calculated exclusively from the validation set by
+Threshold selection
+-------------------
+The clinical threshold is calculated exclusively from the validation set by
 maximizing specificity while maintaining the requested minimum sensitivity.
 
-The same threshold is then applied to train and validation so that their
-performance can be compared.
+The same selected threshold is then applied unchanged to train and validation
+so that their performance can be compared.
 
-The function returns:
+After evaluation, model_metadata.json is updated with the hypothesis,
+target sensitivity and selected threshold. The trained model file itself is
+not modified.
+
+Evaluation outputs
+------------------
+The model directory contains:
+- model_metadata.json
+- evaluation_metadata.json
+- model_metrics.csv
+- validation_threshold_metrics.csv
+- precision_recall_curve.jpg
+- roc_curve.jpg
+- pr_roc_curves.jpg
+- clinical_summary.jpg
+
+evaluate() returns:
 - results["summary"]:
   DataFrame comparing train and validation metrics.
 - results["threshold_metrics"]:
@@ -64,10 +121,11 @@ The function returns:
 - results["selected_threshold"]:
   Threshold selected using the validation set.
 - results["output_directory"]:
-  Path where CSV files and figures were saved.
-
-The returned output directory can subsequently be used to save the trained
-model in the same folder.
+  Model directory containing the model and evaluation outputs.
+- results["model_metadata_path"]:
+  Path to model_metadata.json.
+- results["evaluation_metadata_path"]:
+  Path to evaluation_metadata.json.
 """
 
 from __future__ import annotations
@@ -120,8 +178,8 @@ HYPOTHESIS_DESCRIPTIONS = {
 }
 
 HYPOTHESIS_CLASS_LABELS = {
-    1: ["No biopsy", "Biopsy"],
-    2: ["Not malignant", "Malignant"],
+    1: ["No biopsia", "Biopsia"],
+    2: ["No maligno", "Maligno"],
 }
 
 # Compact grid saved to CSV.
@@ -206,6 +264,137 @@ def _create_run_directory(
     run_directory.mkdir()
 
     return run_directory
+
+
+# ---------------------------------------------------------------------
+# Save model
+# ---------------------------------------------------------------------
+
+MODEL_TYPES = {
+    1: "scikit-learn",
+    2: "pytorch",
+    3: "keras",
+}
+
+
+def save_model(
+    model,
+    model_name: str,
+    model_type: int,
+    *,
+    config_path: str | Path = DEFAULT_CONFIG_PATH,
+) -> Path:
+    """Save a trained model and create its model-specific run directory."""
+    if model_type not in MODEL_TYPES:
+        raise ValueError(
+            "model_type must be 1 (scikit-learn), 2 (PyTorch), or 3 (Keras)."
+        )
+
+    run_directory = _create_run_directory(
+        model_name=model_name,
+        config_path=config_path,
+    )
+
+    framework = MODEL_TYPES[model_type]
+
+    if model_type == 1:
+        import joblib
+
+        model_path = run_directory / "model.joblib"
+        joblib.dump(model, model_path)
+
+    elif model_type == 2:
+        import torch
+
+        model_path = run_directory / "model_state_dict.pt"
+        torch.save(model.state_dict(), model_path)
+
+    else:
+        model_path = run_directory / "model.keras"
+        model.save(model_path)
+
+    metadata = {
+        "created_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "model": {
+            "model_name": model_name,
+            "model_type": model_type,
+            "framework": framework,
+            "class_name": model.__class__.__name__,
+            "class_module": model.__class__.__module__,
+            "model_file": model_path.name,
+        },
+        "evaluation": None,
+    }
+
+    metadata_path = run_directory / "model_metadata.json"
+
+    with metadata_path.open("w", encoding="utf-8") as file:
+        json.dump(
+            metadata,
+            file,
+            indent=2,
+            ensure_ascii=False,
+        )
+
+    print(f"Model saved in: {model_path}")
+
+    return run_directory
+
+
+def _load_model_metadata(
+    run_directory: Path,
+) -> tuple[Path, dict]:
+    """Load model metadata from an existing model run directory."""
+    metadata_path = run_directory / "model_metadata.json"
+
+    if not metadata_path.exists():
+        raise FileNotFoundError(f"model_metadata.json not found in: {run_directory}")
+
+    with metadata_path.open("r", encoding="utf-8") as file:
+        metadata = json.load(file)
+
+    try:
+        metadata["model"]["model_name"]
+    except (KeyError, TypeError) as exc:
+        raise ValueError(f"Invalid model_metadata.json in: {run_directory}") from exc
+
+    return metadata_path, metadata
+
+
+def _update_model_metadata_with_evaluation(
+    model_metadata_path: Path,
+    model_metadata: dict,
+    hypothesis: int,
+    label_col: str,
+    target_sensitivity: float,
+    selected_threshold: float,
+    evaluation_metadata_path: Path,
+) -> Path:
+    """Add evaluation information to the existing model metadata file."""
+    model_metadata["evaluation"] = {
+        "evaluated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "hypothesis": hypothesis,
+        "hypothesis_description": HYPOTHESIS_DESCRIPTIONS[hypothesis],
+        "label_column": label_col,
+        "threshold_selection_split": "validation",
+        "threshold_applied_to": [
+            "train",
+            "validation",
+        ],
+        "target_sensitivity": target_sensitivity,
+        "selected_threshold": selected_threshold,
+        "evaluation_metadata_file": evaluation_metadata_path.name,
+    }
+
+    with model_metadata_path.open("w", encoding="utf-8") as file:
+        json.dump(
+            _make_json_serializable(model_metadata),
+            file,
+            indent=2,
+            ensure_ascii=False,
+        )
+
+    return model_metadata_path
 
 
 # ---------------------------------------------------------------------
@@ -544,9 +733,21 @@ def build_threshold_metrics_table(
         total,
     )
 
-    mcc_numerator = (tp * tn) - (fp * fn)
+    # Convert to float before multiplying to avoid integer overflow
+    # with large datasets.
+    tp_float = tp.astype(float)
+    tn_float = tn.astype(float)
+    fp_float = fp.astype(float)
+    fn_float = fn.astype(float)
 
-    mcc_denominator = np.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
+    mcc_numerator = (tp_float * tn_float) - (fp_float * fn_float)
+
+    mcc_denominator = np.sqrt(
+        (tp_float + fp_float)
+        * (tp_float + fn_float)
+        * (tn_float + fp_float)
+        * (tn_float + fn_float)
+    )
 
     mcc = np.divide(
         mcc_numerator,
@@ -754,7 +955,6 @@ def _save_figure(
 def _plot_precision_recall(
     train_merged: pd.DataFrame,
     validation_merged: pd.DataFrame,
-    model_name: str,
     run_directory: Path,
 ) -> Path:
     """Save train and validation Precision-Recall curves."""
@@ -763,11 +963,11 @@ def _plot_precision_recall(
     fig, ax = plt.subplots(figsize=EDA_STYLE["figure_size"])
 
     split_data = {
-        "Train": (
+        "Entrenamiento": (
             train_merged,
             STATISTIC_PALETTE["distribution"],
         ),
-        "Validation": (
+        "Validación": (
             validation_merged,
             STATISTIC_PALETTE["median"],
         ),
@@ -799,12 +999,12 @@ def _plot_precision_recall(
             linewidth=1.5,
             color=color,
             alpha=0.8,
-            label=f"{split_name} prevalence ({split_prevalence:.3f})",
+            label=f"Prevalencia {split_name.lower()} ({split_prevalence:.3f})",
         )
 
-    ax.set_xlabel("Recall / Sensitivity")
-    ax.set_ylabel("Precision / PPV")
-    ax.set_title(f"Precision-Recall curve · {model_name}")
+    ax.set_xlabel("Recall / Sensibilidad")
+    ax.set_ylabel("Precisión / VPP")
+    ax.set_title("Curva Precision-Recall")
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.legend()
@@ -823,7 +1023,6 @@ def _plot_precision_recall(
 def _plot_roc(
     train_merged: pd.DataFrame,
     validation_merged: pd.DataFrame,
-    model_name: str,
     run_directory: Path,
 ) -> Path:
     """Save train and validation ROC curves."""
@@ -832,11 +1031,11 @@ def _plot_roc(
     fig, ax = plt.subplots(figsize=EDA_STYLE["figure_size"])
 
     split_data = {
-        "Train": (
+        "Entrenamiento": (
             train_merged,
             STATISTIC_PALETTE["distribution"],
         ),
-        "Validation": (
+        "Validación": (
             validation_merged,
             STATISTIC_PALETTE["median"],
         ),
@@ -850,6 +1049,7 @@ def _plot_roc(
             y_true,
             y_prob,
         )
+
         roc_auc = roc_auc_score(
             y_true,
             y_prob,
@@ -869,12 +1069,12 @@ def _plot_roc(
         linestyle="--",
         linewidth=1.5,
         color=STATISTIC_PALETTE["mean"],
-        label="Random classifier",
+        label="Clasificador aleatorio",
     )
 
-    ax.set_xlabel("False Positive Rate")
-    ax.set_ylabel("Sensitivity / True Positive Rate")
-    ax.set_title(f"ROC curve · {model_name}")
+    ax.set_xlabel("Tasa de falsos positivos")
+    ax.set_ylabel("Sensibilidad / Tasa de verdaderos positivos")
+    ax.set_title("Curva ROC")
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.legend()
@@ -893,7 +1093,6 @@ def _plot_roc(
 def _plot_combined_curves(
     train_merged: pd.DataFrame,
     validation_merged: pd.DataFrame,
-    model_name: str,
     run_directory: Path,
 ) -> Path:
     """Save train and validation Precision-Recall and ROC curves."""
@@ -906,11 +1105,11 @@ def _plot_combined_curves(
     )
 
     split_data = {
-        "Train": (
+        "Entrenamiento": (
             train_merged,
             STATISTIC_PALETTE["distribution"],
         ),
-        "Validation": (
+        "Validación": (
             validation_merged,
             STATISTIC_PALETTE["median"],
         ),
@@ -943,7 +1142,7 @@ def _plot_combined_curves(
             linewidth=1.5,
             color=color,
             alpha=0.8,
-            label=f"{split_name} prevalence ({split_prevalence:.3f})",
+            label=f"Prevalencia {split_name.lower()} ({split_prevalence:.3f})",
         )
 
         # ROC curve
@@ -965,8 +1164,8 @@ def _plot_combined_curves(
             linewidth=2,
         )
 
-    axes[0].set_xlabel("Recall / Sensitivity")
-    axes[0].set_ylabel("Precision / PPV")
+    axes[0].set_xlabel("Recall / Sensibilidad")
+    axes[0].set_ylabel("Precisión / VPP")
     axes[0].set_title("Precision-Recall")
     axes[0].set_xlim(0, 1)
     axes[0].set_ylim(0, 1)
@@ -978,18 +1177,18 @@ def _plot_combined_curves(
         linestyle="--",
         linewidth=1.5,
         color=STATISTIC_PALETTE["mean"],
-        label="Random classifier",
+        label="Clasificador aleatorio",
     )
 
-    axes[1].set_xlabel("False Positive Rate")
-    axes[1].set_ylabel("Sensitivity / True Positive Rate")
+    axes[1].set_xlabel("Tasa de falsos positivos")
+    axes[1].set_ylabel("Sensibilidad / Tasa de verdaderos positivos")
     axes[1].set_title("ROC")
     axes[1].set_xlim(0, 1)
     axes[1].set_ylim(0, 1)
     axes[1].legend()
 
     fig.suptitle(
-        f"Discrimination curves · {model_name}",
+        "Curvas de discriminación",
         fontsize=EDA_STYLE["title_size"],
     )
 
@@ -1008,16 +1207,13 @@ def _plot_clinical_summary(
     validation_merged: pd.DataFrame,
     validation_metrics: dict[str, float | int],
     selected_threshold: float,
-    target_sensitivity: float,
     hypothesis: int,
-    model_name: str,
     run_directory: Path,
 ) -> Path:
     """Save confusion matrix and main clinical metrics."""
     set_eda_style()
 
     y_true = validation_merged["y_true"].to_numpy(dtype=int)
-
     y_prob = validation_merged["y_prob"].to_numpy(dtype=float)
 
     y_pred = (y_prob >= selected_threshold).astype(int)
@@ -1031,7 +1227,11 @@ def _plot_clinical_summary(
     fig, axes = plt.subplots(
         nrows=1,
         ncols=2,
-        figsize=(11, 4.5),
+        figsize=(10, 4.5),
+    )
+
+    fig.subplots_adjust(
+        wspace=0.45,
     )
 
     class_labels = HYPOTHESIS_CLASS_LABELS[hypothesis]
@@ -1041,21 +1241,27 @@ def _plot_clinical_summary(
         annot=True,
         fmt=",d",
         cmap="Blues",
-        cbar=False,
+        cbar=True,
+        cbar_kws={
+            "label": "Número de lesiones",
+        },
         ax=axes[0],
         xticklabels=class_labels,
         yticklabels=class_labels,
     )
 
-    axes[0].set_xlabel("Predicted class")
-    axes[0].set_ylabel("True class")
-    axes[0].set_title("Validation confusion matrix")
+    axes[0].set_xlabel("Clase predicha")
+    axes[0].set_ylabel(
+        "Clase real",
+        labelpad=10,
+    )
+    axes[0].set_title("Matriz de confusión de validación")
 
     metric_names = [
-        "Sensitivity",
-        "Specificity",
-        "PPV",
-        "NPV",
+        "Sensibilidad",
+        "Especificidad",
+        "VPP",
+        "VPN",
     ]
 
     metric_values = [
@@ -1074,22 +1280,17 @@ def _plot_clinical_summary(
         alpha=EDA_STYLE["bar_alpha"],
     )
 
-    sensitivity_bar = bars[0]
-
-    axes[1].hlines(
-        y=target_sensitivity,
-        xmin=sensitivity_bar.get_x(),
-        xmax=sensitivity_bar.get_x() + sensitivity_bar.get_width(),
-        linestyle="--",
-        linewidth=2,
-        color=STATISTIC_PALETTE["mean"],
-        label=f"Target sensitivity ({target_sensitivity:.2f})",
-    )
-
     axes[1].set_ylim(0, 1.05)
-    axes[1].set_ylabel("Metric value")
-    axes[1].set_title("Clinical metrics at selected threshold")
-    axes[1].legend()
+    axes[1].set_ylabel(
+        "Valor de la métrica",
+        labelpad=12,
+    )
+    axes[1].set_title("Métricas clínicas de validación")
+
+    axes[1].tick_params(
+        axis="x",
+        labelrotation=20,
+    )
 
     for bar, value in zip(
         bars,
@@ -1106,7 +1307,7 @@ def _plot_clinical_summary(
         )
 
     fig.suptitle(
-        (f"{model_name} · threshold = {selected_threshold:.4f}"),
+        f"Umbral seleccionado = {selected_threshold:.4f}",
         fontsize=EDA_STYLE["title_size"],
     )
 
@@ -1126,9 +1327,7 @@ def save_evaluation_figures(
     validation_merged: pd.DataFrame,
     validation_metrics: dict[str, float | int],
     selected_threshold: float,
-    target_sensitivity: float,
     hypothesis: int,
-    model_name: str,
     run_directory: Path,
 ) -> dict[str, Path]:
     """Create and save the train and validation evaluation figures."""
@@ -1136,28 +1335,23 @@ def save_evaluation_figures(
         "precision_recall_curve": _plot_precision_recall(
             train_merged=train_merged,
             validation_merged=validation_merged,
-            model_name=model_name,
             run_directory=run_directory,
         ),
         "roc_curve": _plot_roc(
             train_merged=train_merged,
             validation_merged=validation_merged,
-            model_name=model_name,
             run_directory=run_directory,
         ),
         "pr_roc_curves": _plot_combined_curves(
             train_merged=train_merged,
             validation_merged=validation_merged,
-            model_name=model_name,
             run_directory=run_directory,
         ),
         "clinical_summary": _plot_clinical_summary(
             validation_merged=validation_merged,
             validation_metrics=validation_metrics,
             selected_threshold=selected_threshold,
-            target_sensitivity=target_sensitivity,
             hypothesis=hypothesis,
-            model_name=model_name,
             run_directory=run_directory,
         ),
     }
@@ -1203,7 +1397,6 @@ def save_evaluation_metadata(
     validation_threshold_free: dict[str, float],
     train_metrics: dict[str, float | int],
     validation_metrics: dict[str, float | int],
-    config_path: str | Path,
     csv_paths: dict[str, Path],
     figure_paths: dict[str, Path],
     run_directory: Path,
@@ -1225,7 +1418,6 @@ def save_evaluation_metadata(
             ],
             "target_sensitivity": target_sensitivity,
             "selected_threshold": selected_threshold,
-            "config_path": _resolve_project_path(config_path),
         },
         "train": {
             "dataset_summary": train_summary,
@@ -1401,10 +1593,9 @@ def evaluate(
     df_train: pd.DataFrame,
     df_validation: pd.DataFrame,
     hypothesis: int,
-    model_name: str,
+    model_directory: str | Path,
     target_sensitivity: float = 0.95,
     *,
-    config_path: str | Path = DEFAULT_CONFIG_PATH,
     prediction_id_col: str = "isic_id",
     probability_col: str = "probability",
     split_id_col: str = "isic_id",
@@ -1437,14 +1628,11 @@ def evaluate(
         1 = lesion recommended for biopsy.
         2 = lesion suspected to be malignant.
 
-    model_name:
-        Name used for the model-specific output directory.
+    model_directory:
+        Existing model run directory returned by save_model().
 
     target_sensitivity:
         Minimum validation sensitivity required during threshold selection.
-
-    config_path:
-        YAML configuration path, relative to the project root unless absolute.
 
     prediction_id_col:
         Lesion identifier column in prediction dataframes.
@@ -1468,6 +1656,23 @@ def evaluate(
         Dictionary containing the summary table, threshold table, selected
         threshold, output directory and generated output paths.
     """
+
+    run_directory = Path(model_directory)
+
+    if not run_directory.exists():
+        raise FileNotFoundError(f"Model directory does not exist: {run_directory}")
+
+    if not run_directory.is_dir():
+        raise NotADirectoryError(
+            f"model_directory must be a directory: {run_directory}"
+        )
+
+    model_metadata_path, model_metadata = _load_model_metadata(
+        run_directory=run_directory,
+    )
+
+    model_name = model_metadata["model"]["model_name"]
+
     _validate_hypothesis(hypothesis)
 
     resolved_label_col = _resolve_label_column(
@@ -1569,11 +1774,6 @@ def evaluate(
         atol=1e-12,
     )
 
-    run_directory = _create_run_directory(
-        model_name=model_name,
-        config_path=config_path,
-    )
-
     csv_paths = save_validation_outputs(
         summary_table=summary_table,
         threshold_table=validation_threshold_table,
@@ -1585,13 +1785,11 @@ def evaluate(
         validation_merged=validation_merged,
         validation_metrics=validation_threshold_metrics,
         selected_threshold=selected_threshold,
-        target_sensitivity=target_sensitivity,
         hypothesis=hypothesis,
-        model_name=model_name,
         run_directory=run_directory,
     )
 
-    metadata_path = save_evaluation_metadata(
+    evaluation_metadata_path = save_evaluation_metadata(
         model_name=model_name,
         hypothesis=hypothesis,
         label_col=resolved_label_col,
@@ -1603,10 +1801,19 @@ def evaluate(
         validation_threshold_free=validation_threshold_free,
         train_metrics=train_threshold_metrics,
         validation_metrics=validation_threshold_metrics,
-        config_path=config_path,
         csv_paths=csv_paths,
         figure_paths=figure_paths,
         run_directory=run_directory,
+    )
+
+    model_metadata_path = _update_model_metadata_with_evaluation(
+        model_metadata_path=model_metadata_path,
+        model_metadata=model_metadata,
+        hypothesis=hypothesis,
+        label_col=resolved_label_col,
+        target_sensitivity=target_sensitivity,
+        selected_threshold=selected_threshold,
+        evaluation_metadata_path=evaluation_metadata_path,
     )
 
     print_validation_summary(
@@ -1630,5 +1837,6 @@ def evaluate(
         "output_directory": run_directory,
         "csv_paths": csv_paths,
         "figure_paths": figure_paths,
-        "metadata_path": metadata_path,
+        "model_metadata_path": model_metadata_path,
+        "evaluation_metadata_path": evaluation_metadata_path,
     }
