@@ -1,0 +1,107 @@
+{
+  "created_at": "2026-08-10T21:24:07+02:00",
+  "model": {
+    "model_name": "xgboost_image_pca_128c_h1_full_train",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy"
+  },
+  "evaluation": {
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.0005843510152772069
+  },
+  "train": {
+    "dataset_summary": {
+      "total_lesions": 305024,
+      "total_patients": 784,
+      "positive_lesions": 812,
+      "negative_lesions": 304212,
+      "patients_with_positive_lesion": 497,
+      "lesion_prevalence": 0.0026620856063785145,
+      "patient_prevalence": 0.6339285714285714
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.06243262800724835,
+      "roc_auc": 0.8874434244520559,
+      "brier_score": 0.0025781570117647088
+    },
+    "threshold_metrics": {
+      "tp": 808.0,
+      "tn": 49261.0,
+      "fp": 254951.0,
+      "fn": 4.0,
+      "sensitivity": 0.9950738916256158,
+      "specificity": 0.1619298384021669,
+      "fnr": 0.0049261083743842365,
+      "fpr": 0.8380701615978331,
+      "ppv": 0.0031592241133254354,
+      "npv": 0.9999188064548868,
+      "f1_score": 0.006298451500754177,
+      "f2_score": 0.015598034029968299,
+      "balanced_accuracy": 0.5785018650138913,
+      "mcc": 0.02198322725053949,
+      "accuracy": 0.1641477391942929,
+      "predicted_positive_count": 255759.0,
+      "predicted_positive_rate": 0.8384881189676878,
+      "tp_per_1000_lesions": 2.6489718841796055,
+      "fp_per_1000_lesions": 835.8391470835081,
+      "fn_per_1000_lesions": 0.013113722198908937
+    }
+  },
+  "validation": {
+    "dataset_summary": {
+      "total_lesions": 38131,
+      "total_patients": 94,
+      "positive_lesions": 101,
+      "negative_lesions": 38030,
+      "patients_with_positive_lesion": 68,
+      "lesion_prevalence": 0.0026487634732894495,
+      "patient_prevalence": 0.723404255319149
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.041404309853559314,
+      "roc_auc": 0.8274676323798564,
+      "brier_score": 0.002590800549812636
+    },
+    "threshold_metrics": {
+      "tp": 96.0,
+      "tn": 5156.0,
+      "fp": 32874.0,
+      "fn": 5.0,
+      "sensitivity": 0.9504950495049505,
+      "specificity": 0.1355771759137523,
+      "fnr": 0.04950495049504951,
+      "fpr": 0.8644228240862477,
+      "ppv": 0.0029117379435850774,
+      "npv": 0.9990311955047472,
+      "f1_score": 0.005805690786489673,
+      "f2_score": 0.01438245340684365,
+      "balanced_accuracy": 0.5430361127093514,
+      "mcc": 0.012931844637884741,
+      "accuracy": 0.13773570061105136,
+      "predicted_positive_count": 32970.0,
+      "predicted_positive_rate": 0.8646508090530015,
+      "tp_per_1000_lesions": 2.51763656867116,
+      "fp_per_1000_lesions": 862.1331724843303,
+      "fn_per_1000_lesions": 0.13112690461828957
+    }
+  },
+  "outputs": {
+    "output_directory": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_pca_128c_h1_full_train",
+    "csv_files": {
+      "model_metrics": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_pca_128c_h1_full_train/model_metrics.csv",
+      "validation_threshold_metrics": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_pca_128c_h1_full_train/validation_threshold_metrics.csv"
+    },
+    "figure_files": {
+      "precision_recall_curve": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_pca_128c_h1_full_train/precision_recall_curve.jpg",
+      "roc_curve": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_pca_128c_h1_full_train/roc_curve.jpg",
+      "pr_roc_curves": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_pca_128c_h1_full_train/pr_roc_curves.jpg",
+      "clinical_summary": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_pca_128c_h1_full_train/clinical_summary.jpg"
+    }
+  }
+}
