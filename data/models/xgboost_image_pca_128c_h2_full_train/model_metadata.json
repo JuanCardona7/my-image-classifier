@@ -1,0 +1,25 @@
+{
+  "created_at": "2026-08-11T22:08:59+02:00",
+  "model": {
+    "model_name": "xgboost_image_pca_128c_h2_full_train",
+    "model_type": 1,
+    "framework": "scikit-learn",
+    "class_name": "XGBClassifier",
+    "class_module": "xgboost.sklearn",
+    "model_file": "model.joblib"
+  },
+  "evaluation": {
+    "evaluated_at": "2026-08-11T22:09:02+02:00",
+    "hypothesis": 2,
+    "hypothesis_description": "Lesion suspected to be malignant",
+    "label_column": "target_malignant",
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.06243965029716492,
+    "evaluation_metadata_file": "evaluation_metadata.json"
+  }
+}
