@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-08-12T23:51:37-05:00",
+  "created_at": "2026-08-13T23:34:11-05:00",
   "model": {
     "model_name": "svm_metadata_h2",
     "hypothesis": 2,
@@ -13,7 +13,7 @@
       "validation"
     ],
     "target_sensitivity": 0.95,
-    "selected_threshold": 0.1865579224876381
+    "selected_threshold": 0.20068712262114993
   },
   "train": {
     "dataset_summary": {
@@ -26,30 +26,30 @@
       "patient_prevalence": 0.39880952380952384
     },
     "threshold_free_metrics": {
-      "pr_auc": 0.6514120808806156,
-      "roc_auc": 0.7570266272189349,
-      "brier_score": 0.19025143351114782
+      "pr_auc": 0.640922314242196,
+      "roc_auc": 0.7495717844908129,
+      "brier_score": 0.192140556275892
     },
     "threshold_metrics": {
       "tp": 283.0,
-      "tn": 161.0,
-      "fp": 346.0,
+      "tn": 158.0,
+      "fp": 349.0,
       "fn": 21.0,
       "sensitivity": 0.930921052631579,
-      "specificity": 0.3175542406311637,
+      "specificity": 0.3116370808678501,
       "fnr": 0.06907894736842106,
-      "fpr": 0.6824457593688363,
-      "ppv": 0.44992050874403816,
-      "npv": 0.8846153846153846,
-      "f1_score": 0.6066452304394427,
-      "f2_score": 0.7669376693766938,
-      "balanced_accuracy": 0.6242376466313714,
-      "mcc": 0.2883121645185929,
-      "accuracy": 0.5474722564734895,
-      "predicted_positive_count": 629.0,
-      "predicted_positive_rate": 0.7755856966707768,
+      "fpr": 0.6883629191321499,
+      "ppv": 0.4477848101265823,
+      "npv": 0.88268156424581,
+      "f1_score": 0.6047008547008548,
+      "f2_score": 0.7656926406926408,
+      "balanced_accuracy": 0.6212790667497146,
+      "mcc": 0.28312065793949237,
+      "accuracy": 0.5437731196054254,
+      "predicted_positive_count": 632.0,
+      "predicted_positive_rate": 0.7792848335388409,
       "tp_per_1000_lesions": 348.95191122071515,
-      "fp_per_1000_lesions": 426.6337854500616,
+      "fp_per_1000_lesions": 430.3329223181258,
       "fn_per_1000_lesions": 25.89395807644883
     }
   },
@@ -64,30 +64,30 @@
       "patient_prevalence": 0.34375
     },
     "threshold_free_metrics": {
-      "pr_auc": 0.558097676422964,
-      "roc_auc": 0.7213868003341688,
-      "brier_score": 0.20413640439021788
+      "pr_auc": 0.5513377358595476,
+      "roc_auc": 0.7011278195488723,
+      "brier_score": 0.2091838202395936
     },
     "threshold_metrics": {
       "tp": 37.0,
-      "tn": 18.0,
-      "fp": 45.0,
+      "tn": 17.0,
+      "fp": 46.0,
       "fn": 1.0,
       "sensitivity": 0.9736842105263158,
-      "specificity": 0.2857142857142857,
+      "specificity": 0.2698412698412698,
       "fnr": 0.02631578947368421,
-      "fpr": 0.7142857142857143,
-      "ppv": 0.45121951219512196,
-      "npv": 0.9473684210526315,
-      "f1_score": 0.6166666666666667,
-      "f2_score": 0.7905982905982907,
-      "balanced_accuracy": 0.6296992481203008,
-      "mcc": 0.3215479909813099,
-      "accuracy": 0.5445544554455446,
-      "predicted_positive_count": 82.0,
-      "predicted_positive_rate": 0.8118811881188119,
+      "fpr": 0.7301587301587301,
+      "ppv": 0.4457831325301205,
+      "npv": 0.9444444444444444,
+      "f1_score": 0.6115702479338843,
+      "f2_score": 0.7872340425531916,
+      "balanced_accuracy": 0.6217627401837929,
+      "mcc": 0.30826994361340176,
+      "accuracy": 0.5346534653465347,
+      "predicted_positive_count": 83.0,
+      "predicted_positive_rate": 0.8217821782178217,
       "tp_per_1000_lesions": 366.33663366336634,
-      "fp_per_1000_lesions": 445.54455445544556,
+      "fp_per_1000_lesions": 455.44554455445547,
       "fn_per_1000_lesions": 9.900990099009901
     }
   },
