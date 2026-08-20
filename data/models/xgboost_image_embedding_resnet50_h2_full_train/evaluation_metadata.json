@@ -1,0 +1,107 @@
+{
+  "created_at": "2026-08-18T07:31:16+02:00",
+  "model": {
+    "model_name": "xgboost_image_embedding_resnet50_h2_full_train",
+    "hypothesis": 2,
+    "hypothesis_description": "Lesion suspected to be malignant",
+    "label_column": "target_malignant"
+  },
+  "evaluation": {
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.06701188534498215
+  },
+  "train": {
+    "dataset_summary": {
+      "total_lesions": 811,
+      "total_patients": 504,
+      "positive_lesions": 304,
+      "negative_lesions": 507,
+      "patients_with_positive_lesion": 201,
+      "lesion_prevalence": 0.374845869297164,
+      "patient_prevalence": 0.39880952380952384
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 1.0,
+      "roc_auc": 1.0,
+      "brier_score": 0.0138452234280309
+    },
+    "threshold_metrics": {
+      "tp": 304.0,
+      "tn": 265.0,
+      "fp": 242.0,
+      "fn": 0.0,
+      "sensitivity": 1.0,
+      "specificity": 0.5226824457593688,
+      "fnr": 0.0,
+      "fpr": 0.47731755424063116,
+      "ppv": 0.5567765567765568,
+      "npv": 1.0,
+      "f1_score": 0.7152941176470589,
+      "f2_score": 0.8626560726447219,
+      "balanced_accuracy": 0.7613412228796844,
+      "mcc": 0.5394602232208142,
+      "accuracy": 0.7016029593094945,
+      "predicted_positive_count": 546.0,
+      "predicted_positive_rate": 0.6732429099876696,
+      "tp_per_1000_lesions": 374.84586929716403,
+      "fp_per_1000_lesions": 298.39704069050555,
+      "fn_per_1000_lesions": 0.0
+    }
+  },
+  "validation": {
+    "dataset_summary": {
+      "total_lesions": 101,
+      "total_patients": 64,
+      "positive_lesions": 38,
+      "negative_lesions": 63,
+      "patients_with_positive_lesion": 22,
+      "lesion_prevalence": 0.37623762376237624,
+      "patient_prevalence": 0.34375
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.556938144963893,
+      "roc_auc": 0.7305764411027569,
+      "brier_score": 0.2115605208021609
+    },
+    "threshold_metrics": {
+      "tp": 37.0,
+      "tn": 18.0,
+      "fp": 45.0,
+      "fn": 1.0,
+      "sensitivity": 0.9736842105263158,
+      "specificity": 0.2857142857142857,
+      "fnr": 0.02631578947368421,
+      "fpr": 0.7142857142857143,
+      "ppv": 0.45121951219512196,
+      "npv": 0.9473684210526315,
+      "f1_score": 0.6166666666666667,
+      "f2_score": 0.7905982905982907,
+      "balanced_accuracy": 0.6296992481203008,
+      "mcc": 0.3215479909813099,
+      "accuracy": 0.5445544554455446,
+      "predicted_positive_count": 82.0,
+      "predicted_positive_rate": 0.8118811881188119,
+      "tp_per_1000_lesions": 366.33663366336634,
+      "fp_per_1000_lesions": 445.54455445544556,
+      "fn_per_1000_lesions": 9.900990099009901
+    }
+  },
+  "outputs": {
+    "output_directory": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_resnet50_h2_full_train",
+    "csv_files": {
+      "model_metrics": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_resnet50_h2_full_train/model_metrics.csv",
+      "validation_threshold_metrics": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_resnet50_h2_full_train/validation_threshold_metrics.csv"
+    },
+    "figure_files": {
+      "precision_recall_curve": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_resnet50_h2_full_train/precision_recall_curve.jpg",
+      "roc_curve": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_resnet50_h2_full_train/roc_curve.jpg",
+      "pr_roc_curves": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_resnet50_h2_full_train/pr_roc_curves.jpg",
+      "clinical_summary": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_resnet50_h2_full_train/clinical_summary.jpg"
+    }
+  }
+}

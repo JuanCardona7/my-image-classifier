@@ -1,0 +1,107 @@
+{
+  "created_at": "2026-08-18T01:07:46+02:00",
+  "model": {
+    "model_name": "xgboost_image_embedding_resnet50_h1_full_train",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy"
+  },
+  "evaluation": {
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.0014358835760504007
+  },
+  "train": {
+    "dataset_summary": {
+      "total_lesions": 305024,
+      "total_patients": 784,
+      "positive_lesions": 812,
+      "negative_lesions": 304212,
+      "patients_with_positive_lesion": 497,
+      "lesion_prevalence": 0.0026620856063785145,
+      "patient_prevalence": 0.6339285714285714
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.1880298349054959,
+      "roc_auc": 0.9296406996669875,
+      "brier_score": 0.002388293075908911
+    },
+    "threshold_metrics": {
+      "tp": 806.0,
+      "tn": 100551.0,
+      "fp": 203661.0,
+      "fn": 6.0,
+      "sensitivity": 0.9926108374384236,
+      "specificity": 0.3305293676778036,
+      "fnr": 0.007389162561576354,
+      "fpr": 0.6694706323221964,
+      "ppv": 0.00394195640372285,
+      "npv": 0.9999403323488171,
+      "f1_score": 0.007852727263870147,
+      "f2_score": 0.019401583901018222,
+      "balanced_accuracy": 0.6615701025581135,
+      "mcc": 0.03541925442208203,
+      "accuracy": 0.3322918852287033,
+      "predicted_positive_count": 204467.0,
+      "predicted_positive_rate": 0.6703308592110785,
+      "tp_per_1000_lesions": 2.642415023080151,
+      "fp_per_1000_lesions": 667.6884441879984,
+      "fn_per_1000_lesions": 0.019670583298363405
+    }
+  },
+  "validation": {
+    "dataset_summary": {
+      "total_lesions": 38131,
+      "total_patients": 94,
+      "positive_lesions": 101,
+      "negative_lesions": 38030,
+      "patients_with_positive_lesion": 68,
+      "lesion_prevalence": 0.0026487634732894495,
+      "patient_prevalence": 0.723404255319149
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.03304414135539029,
+      "roc_auc": 0.8626617079273008,
+      "brier_score": 0.002658454977963045
+    },
+    "threshold_metrics": {
+      "tp": 96.0,
+      "tn": 13738.0,
+      "fp": 24292.0,
+      "fn": 5.0,
+      "sensitivity": 0.9504950495049505,
+      "specificity": 0.36124112542729425,
+      "fnr": 0.04950495049504951,
+      "fpr": 0.6387588745727057,
+      "ppv": 0.003936362145317369,
+      "npv": 0.9996361784181038,
+      "f1_score": 0.007840254808281268,
+      "f2_score": 0.01936108422071636,
+      "balanced_accuracy": 0.6558680874661224,
+      "mcc": 0.03337199619488156,
+      "accuracy": 0.3628019196978836,
+      "predicted_positive_count": 24388.0,
+      "predicted_positive_rate": 0.6395845899661693,
+      "tp_per_1000_lesions": 2.51763656867116,
+      "fp_per_1000_lesions": 637.0669533974981,
+      "fn_per_1000_lesions": 0.13112690461828957
+    }
+  },
+  "outputs": {
+    "output_directory": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_resnet50_h1_full_train",
+    "csv_files": {
+      "model_metrics": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_resnet50_h1_full_train/model_metrics.csv",
+      "validation_threshold_metrics": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_resnet50_h1_full_train/validation_threshold_metrics.csv"
+    },
+    "figure_files": {
+      "precision_recall_curve": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_resnet50_h1_full_train/precision_recall_curve.jpg",
+      "roc_curve": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_resnet50_h1_full_train/roc_curve.jpg",
+      "pr_roc_curves": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_resnet50_h1_full_train/pr_roc_curves.jpg",
+      "clinical_summary": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_resnet50_h1_full_train/clinical_summary.jpg"
+    }
+  }
+}

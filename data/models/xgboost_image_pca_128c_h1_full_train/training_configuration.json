@@ -1,0 +1,30 @@
+{
+  "hypothesis": 1,
+  "target": "target_biopsy",
+  "image_representation": "pca",
+  "image_size": 136,
+  "pca_n_components": 128,
+  "pca_timestamp": null,
+  "embedding_model": null,
+  "embedding_timestamp": null,
+  "train_full_lesions": 305024,
+  "train_used_lesions": 305024,
+  "train_max_lesions_setting": null,
+  "train_subsample_random_state": 42,
+  "cv_random_state": 42,
+  "n_cv_splits": 5,
+  "n_random_iter": 50,
+  "n_features": 128,
+  "final_model_params": {
+    "subsample": 0.6,
+    "scale_pos_weight": 1.0,
+    "reg_lambda": 1.0,
+    "reg_alpha": 0.0,
+    "n_estimators": 300,
+    "min_child_weight": 3,
+    "max_depth": 2,
+    "learning_rate": 0.03,
+    "gamma": 0.1,
+    "colsample_bytree": 1.0
+  }
+}
