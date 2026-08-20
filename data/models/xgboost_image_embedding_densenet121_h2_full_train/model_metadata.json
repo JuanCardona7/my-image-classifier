@@ -1,0 +1,25 @@
+{
+  "created_at": "2026-08-18T07:47:34+02:00",
+  "model": {
+    "model_name": "xgboost_image_embedding_densenet121_h2_full_train",
+    "model_type": 1,
+    "framework": "scikit-learn",
+    "class_name": "XGBClassifier",
+    "class_module": "xgboost.sklearn",
+    "model_file": "model.joblib"
+  },
+  "evaluation": {
+    "evaluated_at": "2026-08-18T07:47:36+02:00",
+    "hypothesis": 2,
+    "hypothesis_description": "Lesion suspected to be malignant",
+    "label_column": "target_malignant",
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.18917547166347504,
+    "evaluation_metadata_file": "evaluation_metadata.json"
+  }
+}

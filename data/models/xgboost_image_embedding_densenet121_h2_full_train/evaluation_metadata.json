@@ -1,0 +1,107 @@
+{
+  "created_at": "2026-08-18T07:47:36+02:00",
+  "model": {
+    "model_name": "xgboost_image_embedding_densenet121_h2_full_train",
+    "hypothesis": 2,
+    "hypothesis_description": "Lesion suspected to be malignant",
+    "label_column": "target_malignant"
+  },
+  "evaluation": {
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.18917547166347504
+  },
+  "train": {
+    "dataset_summary": {
+      "total_lesions": 811,
+      "total_patients": 504,
+      "positive_lesions": 304,
+      "negative_lesions": 507,
+      "patients_with_positive_lesion": 201,
+      "lesion_prevalence": 0.374845869297164,
+      "patient_prevalence": 0.39880952380952384
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.8534374059976632,
+      "roc_auc": 0.8922908232118758,
+      "brier_score": 0.13519922549352983
+    },
+    "threshold_metrics": {
+      "tp": 297.0,
+      "tn": 202.0,
+      "fp": 305.0,
+      "fn": 7.0,
+      "sensitivity": 0.9769736842105263,
+      "specificity": 0.398422090729783,
+      "fnr": 0.023026315789473683,
+      "fpr": 0.6015779092702169,
+      "ppv": 0.49335548172757476,
+      "npv": 0.9665071770334929,
+      "f1_score": 0.6556291390728477,
+      "f2_score": 0.8168316831683168,
+      "balanced_accuracy": 0.6876978874701547,
+      "mcc": 0.4154882659615335,
+      "accuracy": 0.6152897657213316,
+      "predicted_positive_count": 602.0,
+      "predicted_positive_rate": 0.7422934648581998,
+      "tp_per_1000_lesions": 366.2145499383477,
+      "fp_per_1000_lesions": 376.078914919852,
+      "fn_per_1000_lesions": 8.631319358816276
+    }
+  },
+  "validation": {
+    "dataset_summary": {
+      "total_lesions": 101,
+      "total_patients": 64,
+      "positive_lesions": 38,
+      "negative_lesions": 63,
+      "patients_with_positive_lesion": 22,
+      "lesion_prevalence": 0.37623762376237624,
+      "patient_prevalence": 0.34375
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.6319721146543306,
+      "roc_auc": 0.7393483709273183,
+      "brier_score": 0.20023818152602954
+    },
+    "threshold_metrics": {
+      "tp": 37.0,
+      "tn": 21.0,
+      "fp": 42.0,
+      "fn": 1.0,
+      "sensitivity": 0.9736842105263158,
+      "specificity": 0.3333333333333333,
+      "fnr": 0.02631578947368421,
+      "fpr": 0.6666666666666666,
+      "ppv": 0.46835443037974683,
+      "npv": 0.9545454545454546,
+      "f1_score": 0.6324786324786325,
+      "f2_score": 0.800865800865801,
+      "balanced_accuracy": 0.6535087719298246,
+      "mcc": 0.36032996540429935,
+      "accuracy": 0.5742574257425742,
+      "predicted_positive_count": 79.0,
+      "predicted_positive_rate": 0.7821782178217822,
+      "tp_per_1000_lesions": 366.33663366336634,
+      "fp_per_1000_lesions": 415.8415841584158,
+      "fn_per_1000_lesions": 9.900990099009901
+    }
+  },
+  "outputs": {
+    "output_directory": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_densenet121_h2_full_train",
+    "csv_files": {
+      "model_metrics": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_densenet121_h2_full_train/model_metrics.csv",
+      "validation_threshold_metrics": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_densenet121_h2_full_train/validation_threshold_metrics.csv"
+    },
+    "figure_files": {
+      "precision_recall_curve": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_densenet121_h2_full_train/precision_recall_curve.jpg",
+      "roc_curve": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_densenet121_h2_full_train/roc_curve.jpg",
+      "pr_roc_curves": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_densenet121_h2_full_train/pr_roc_curves.jpg",
+      "clinical_summary": "/Users/carlesraichbros/my-image-classifier/data/models/xgboost_image_embedding_densenet121_h2_full_train/clinical_summary.jpg"
+    }
+  }
+}
