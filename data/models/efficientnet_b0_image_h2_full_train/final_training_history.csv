@@ -1,0 +1,6 @@
+stage,stage_epoch,total_epoch,train_loss
+warmup,1,1,0.8328548177396913
+warmup,2,2,0.7748981517281397
+fine_tune,1,3,0.7647619891989834
+fine_tune,2,4,0.7127299449887728
+fine_tune,3,5,0.6897670270188375
