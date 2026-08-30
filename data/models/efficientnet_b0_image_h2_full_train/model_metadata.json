@@ -1,0 +1,25 @@
+{
+  "created_at": "2026-08-29T14:45:11+02:00",
+  "model": {
+    "model_name": "efficientnet_b0_image_h2_full_train",
+    "model_type": 2,
+    "framework": "pytorch",
+    "class_name": "EfficientNet",
+    "class_module": "torchvision.models.efficientnet",
+    "model_file": "model_state_dict.pt"
+  },
+  "evaluation": {
+    "evaluated_at": "2026-08-29T14:45:52+02:00",
+    "hypothesis": 2,
+    "hypothesis_description": "Lesion suspected to be malignant",
+    "label_column": "target_malignant",
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.30697745084762573,
+    "evaluation_metadata_file": "evaluation_metadata.json"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "model": {
+    "model_name": "efficientnet_b0_image_h1_full_train",
+    "model_type": "image",
+    "framework": "pytorch",
+    "class_name": "EfficientNet"
+  },
+  "evaluation": {
+    "evaluated_at": "2026-08-27T22:14:24+02:00",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy",
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.150691956281662,
+    "evaluation_metadata_file": "evaluation_metadata.json"
+  }
+}

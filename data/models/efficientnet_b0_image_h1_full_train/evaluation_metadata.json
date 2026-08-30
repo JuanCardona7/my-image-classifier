@@ -1,0 +1,107 @@
+{
+  "created_at": "2026-08-27T22:14:24+02:00",
+  "model": {
+    "model_name": "efficientnet_b0_image_h1_full_train",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy"
+  },
+  "evaluation": {
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.150691956281662
+  },
+  "train": {
+    "dataset_summary": {
+      "total_lesions": 305024,
+      "total_patients": 784,
+      "positive_lesions": 812,
+      "negative_lesions": 304212,
+      "patients_with_positive_lesion": 497,
+      "lesion_prevalence": 0.0026620856063785145,
+      "patient_prevalence": 0.6339285714285714
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.02418175768037174,
+      "roc_auc": 0.8316367449773652,
+      "brier_score": 0.13374962798087528
+    },
+    "threshold_metrics": {
+      "tp": 786.0,
+      "tn": 76348.0,
+      "fp": 227864.0,
+      "fn": 26.0,
+      "sensitivity": 0.9679802955665024,
+      "specificity": 0.2509697184857928,
+      "fnr": 0.03201970443349754,
+      "fpr": 0.7490302815142073,
+      "ppv": 0.0034375683358845396,
+      "npv": 0.9996595700107367,
+      "f1_score": 0.006850807541117919,
+      "f2_score": 0.016947106055248427,
+      "balanced_accuracy": 0.6094750070261477,
+      "mcc": 0.02604070821837627,
+      "accuracy": 0.2528784620226605,
+      "predicted_positive_count": 228650.0,
+      "predicted_positive_rate": 0.7496131451951322,
+      "tp_per_1000_lesions": 2.5768464120856063,
+      "fp_per_1000_lesions": 747.0362987830465,
+      "fn_per_1000_lesions": 0.0852391942929081
+    }
+  },
+  "validation": {
+    "dataset_summary": {
+      "total_lesions": 38131,
+      "total_patients": 94,
+      "positive_lesions": 101,
+      "negative_lesions": 38030,
+      "patients_with_positive_lesion": 68,
+      "lesion_prevalence": 0.0026487634732894495,
+      "patient_prevalence": 0.723404255319149
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.025260192461083658,
+      "roc_auc": 0.8316558318992563,
+      "brier_score": 0.1331828705434983
+    },
+    "threshold_metrics": {
+      "tp": 96.0,
+      "tn": 9265.0,
+      "fp": 28765.0,
+      "fn": 5.0,
+      "sensitivity": 0.9504950495049505,
+      "specificity": 0.24362345516697345,
+      "fnr": 0.04950495049504951,
+      "fpr": 0.7563765448330265,
+      "ppv": 0.003326288070406431,
+      "npv": 0.9994606256742179,
+      "f1_score": 0.00662937642428009,
+      "f2_score": 0.016401845207585853,
+      "balanced_accuracy": 0.5970592523359619,
+      "mcc": 0.02325922459490231,
+      "accuracy": 0.24549579082636175,
+      "predicted_positive_count": 28861.0,
+      "predicted_positive_rate": 0.7568907188376911,
+      "tp_per_1000_lesions": 2.51763656867116,
+      "fp_per_1000_lesions": 754.37308226902,
+      "fn_per_1000_lesions": 0.13112690461828957
+    }
+  },
+  "outputs": {
+    "output_directory": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h1_full_train",
+    "csv_files": {
+      "model_metrics": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h1_full_train/model_metrics.csv",
+      "validation_threshold_metrics": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h1_full_train/validation_threshold_metrics.csv"
+    },
+    "figure_files": {
+      "precision_recall_curve": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h1_full_train/precision_recall_curve.jpg",
+      "roc_curve": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h1_full_train/roc_curve.jpg",
+      "pr_roc_curves": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h1_full_train/pr_roc_curves.jpg",
+      "clinical_summary": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h1_full_train/clinical_summary.jpg"
+    }
+  }
+}
