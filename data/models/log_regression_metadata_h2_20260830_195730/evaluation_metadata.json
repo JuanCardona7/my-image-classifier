@@ -1,0 +1,107 @@
+{
+  "created_at": "2026-08-30T19:57:30+02:00",
+  "model": {
+    "model_name": "log_regression_metadata_h2",
+    "hypothesis": 2,
+    "hypothesis_description": "Lesion suspected to be malignant",
+    "label_column": "target_malignant"
+  },
+  "evaluation": {
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.37774207224182393
+  },
+  "train": {
+    "dataset_summary": {
+      "total_lesions": 811,
+      "total_patients": 504,
+      "positive_lesions": 304,
+      "negative_lesions": 507,
+      "patients_with_positive_lesion": 201,
+      "lesion_prevalence": 0.374845869297164,
+      "patient_prevalence": 0.39880952380952384
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.635437312981031,
+      "roc_auc": 0.7471225215405377,
+      "brier_score": 0.2121996531944938
+    },
+    "threshold_metrics": {
+      "tp": 277.0,
+      "tn": 180.0,
+      "fp": 327.0,
+      "fn": 27.0,
+      "sensitivity": 0.9111842105263158,
+      "specificity": 0.35502958579881655,
+      "fnr": 0.08881578947368421,
+      "fpr": 0.6449704142011834,
+      "ppv": 0.4586092715231788,
+      "npv": 0.8695652173913043,
+      "f1_score": 0.6101321585903083,
+      "f2_score": 0.7609890109890111,
+      "balanced_accuracy": 0.6331068981625662,
+      "mcc": 0.295574993108322,
+      "accuracy": 0.5635018495684341,
+      "predicted_positive_count": 604.0,
+      "predicted_positive_rate": 0.7447595561035758,
+      "tp_per_1000_lesions": 341.55363748458694,
+      "fp_per_1000_lesions": 403.2059186189889,
+      "fn_per_1000_lesions": 33.292231812577064
+    }
+  },
+  "validation": {
+    "dataset_summary": {
+      "total_lesions": 101,
+      "total_patients": 64,
+      "positive_lesions": 38,
+      "negative_lesions": 63,
+      "patients_with_positive_lesion": 22,
+      "lesion_prevalence": 0.37623762376237624,
+      "patient_prevalence": 0.34375
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.5823326924813128,
+      "roc_auc": 0.7458228905597327,
+      "brier_score": 0.21512242281884564
+    },
+    "threshold_metrics": {
+      "tp": 37.0,
+      "tn": 18.0,
+      "fp": 45.0,
+      "fn": 1.0,
+      "sensitivity": 0.9736842105263158,
+      "specificity": 0.2857142857142857,
+      "fnr": 0.02631578947368421,
+      "fpr": 0.7142857142857143,
+      "ppv": 0.45121951219512196,
+      "npv": 0.9473684210526315,
+      "f1_score": 0.6166666666666667,
+      "f2_score": 0.7905982905982907,
+      "balanced_accuracy": 0.6296992481203008,
+      "mcc": 0.3215479909813099,
+      "accuracy": 0.5445544554455446,
+      "predicted_positive_count": 82.0,
+      "predicted_positive_rate": 0.8118811881188119,
+      "tp_per_1000_lesions": 366.33663366336634,
+      "fp_per_1000_lesions": 445.54455445544556,
+      "fn_per_1000_lesions": 9.900990099009901
+    }
+  },
+  "outputs": {
+    "output_directory": "C:\\Users\\Krop\\Desktop\\Master\\Curso_Master\\TFM\\ProjecteTFM\\my-image-classifier\\data\\models\\log_regression_metadata_h2_20260830_195730",
+    "csv_files": {
+      "model_metrics": "C:\\Users\\Krop\\Desktop\\Master\\Curso_Master\\TFM\\ProjecteTFM\\my-image-classifier\\data\\models\\log_regression_metadata_h2_20260830_195730\\model_metrics.csv",
+      "validation_threshold_metrics": "C:\\Users\\Krop\\Desktop\\Master\\Curso_Master\\TFM\\ProjecteTFM\\my-image-classifier\\data\\models\\log_regression_metadata_h2_20260830_195730\\validation_threshold_metrics.csv"
+    },
+    "figure_files": {
+      "precision_recall_curve": "C:\\Users\\Krop\\Desktop\\Master\\Curso_Master\\TFM\\ProjecteTFM\\my-image-classifier\\data\\models\\log_regression_metadata_h2_20260830_195730\\precision_recall_curve.jpg",
+      "roc_curve": "C:\\Users\\Krop\\Desktop\\Master\\Curso_Master\\TFM\\ProjecteTFM\\my-image-classifier\\data\\models\\log_regression_metadata_h2_20260830_195730\\roc_curve.jpg",
+      "pr_roc_curves": "C:\\Users\\Krop\\Desktop\\Master\\Curso_Master\\TFM\\ProjecteTFM\\my-image-classifier\\data\\models\\log_regression_metadata_h2_20260830_195730\\pr_roc_curves.jpg",
+      "clinical_summary": "C:\\Users\\Krop\\Desktop\\Master\\Curso_Master\\TFM\\ProjecteTFM\\my-image-classifier\\data\\models\\log_regression_metadata_h2_20260830_195730\\clinical_summary.jpg"
+    }
+  }
+}
