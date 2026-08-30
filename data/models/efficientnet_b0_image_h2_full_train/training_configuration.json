@@ -17,9 +17,9 @@
     "train_lesions": 649,
     "validation_lesions": 162,
     "best_metrics": {
-      "pr_auc": 0.6904050232197798,
-      "roc_auc": 0.767245577016718,
-      "brier_score": 0.19714851677417755
+      "pr_auc": 0.6979409792875979,
+      "roc_auc": 0.7696802467131958,
+      "brier_score": 0.19330312311649323
     }
   },
   "class_imbalance": {
@@ -31,17 +31,17 @@
     "batch_size": 32,
     "num_workers": 0,
     "warmup_learning_rate": 0.001,
-    "fine_tune_learning_rate": 0.0001,
+    "fine_tune_learning_rate": 5e-05,
     "weight_decay": 0.0001,
     "configured_warmup_epochs": 2,
     "configured_max_fine_tune_epochs": 12,
     "early_stopping_patience": 3,
-    "unfreeze_last_n_blocks": 2,
+    "unfreeze_last_n_blocks": 4,
     "selected_final_schedule": {
       "warmup_epochs": 2,
-      "fine_tune_epochs": 3
+      "fine_tune_epochs": 8
     },
-    "dropout": 0.2,
+    "dropout": 0.4,
     "mixed_precision": false,
     "device": "cpu"
   },

@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-08-25T09:47:26+02:00",
+  "created_at": "2026-08-29T14:45:52+02:00",
   "model": {
     "model_name": "efficientnet_b0_image_h2_full_train",
     "hypothesis": 2,
@@ -13,7 +13,7 @@
       "validation"
     ],
     "target_sensitivity": 0.95,
-    "selected_threshold": 0.20782499015331268
+    "selected_threshold": 0.30697745084762573
   },
   "train": {
     "dataset_summary": {
@@ -26,31 +26,31 @@
       "patient_prevalence": 0.39880952380952384
     },
     "threshold_free_metrics": {
-      "pr_auc": 0.7492915541194122,
-      "roc_auc": 0.813940361258175,
-      "brier_score": 0.1825531771756514
+      "pr_auc": 0.7955131298654934,
+      "roc_auc": 0.8609207931070278,
+      "brier_score": 0.1644677826863186
     },
     "threshold_metrics": {
-      "tp": 300.0,
-      "tn": 63.0,
-      "fp": 444.0,
-      "fn": 4.0,
-      "sensitivity": 0.9868421052631579,
-      "specificity": 0.1242603550295858,
-      "fnr": 0.013157894736842105,
-      "fpr": 0.8757396449704142,
-      "ppv": 0.4032258064516129,
-      "npv": 0.9402985074626866,
-      "f1_score": 0.5725190839694656,
-      "f2_score": 0.7653061224489796,
-      "balanced_accuracy": 0.5555512301463719,
-      "mcc": 0.19536221857425626,
-      "accuracy": 0.4475955610357583,
-      "predicted_positive_count": 744.0,
-      "predicted_positive_rate": 0.9173859432799013,
-      "tp_per_1000_lesions": 369.9136868064118,
-      "fp_per_1000_lesions": 547.4722564734896,
-      "fn_per_1000_lesions": 4.932182490752158
+      "tp": 294.0,
+      "tn": 205.0,
+      "fp": 302.0,
+      "fn": 10.0,
+      "sensitivity": 0.9671052631578947,
+      "specificity": 0.40433925049309666,
+      "fnr": 0.03289473684210526,
+      "fpr": 0.5956607495069034,
+      "ppv": 0.49328859060402686,
+      "npv": 0.9534883720930233,
+      "f1_score": 0.6533333333333334,
+      "f2_score": 0.8112582781456954,
+      "balanced_accuracy": 0.6857222568254957,
+      "mcc": 0.40737311106585433,
+      "accuracy": 0.6152897657213316,
+      "predicted_positive_count": 596.0,
+      "predicted_positive_rate": 0.7348951911220715,
+      "tp_per_1000_lesions": 362.5154130702836,
+      "fp_per_1000_lesions": 372.3797780517879,
+      "fn_per_1000_lesions": 12.330456226880395
     }
   },
   "validation": {
@@ -64,44 +64,44 @@
       "patient_prevalence": 0.34375
     },
     "threshold_free_metrics": {
-      "pr_auc": 0.6444551900541327,
-      "roc_auc": 0.7280701754385965,
-      "brier_score": 0.21754384635458007
+      "pr_auc": 0.6979069852042397,
+      "roc_auc": 0.7723475355054303,
+      "brier_score": 0.20934943213306112
     },
     "threshold_metrics": {
-      "tp": 38.0,
-      "tn": 5.0,
-      "fp": 58.0,
-      "fn": 0.0,
-      "sensitivity": 1.0,
-      "specificity": 0.07936507936507936,
-      "fnr": 0.0,
-      "fpr": 0.9206349206349206,
-      "ppv": 0.3958333333333333,
-      "npv": 1.0,
-      "f1_score": 0.5671641791044776,
-      "f2_score": 0.7661290322580645,
-      "balanced_accuracy": 0.5396825396825397,
-      "mcc": 0.1772437415406928,
-      "accuracy": 0.42574257425742573,
-      "predicted_positive_count": 96.0,
-      "predicted_positive_rate": 0.9504950495049505,
-      "tp_per_1000_lesions": 376.23762376237624,
-      "fp_per_1000_lesions": 574.2574257425742,
-      "fn_per_1000_lesions": 0.0
+      "tp": 37.0,
+      "tn": 19.0,
+      "fp": 44.0,
+      "fn": 1.0,
+      "sensitivity": 0.9736842105263158,
+      "specificity": 0.30158730158730157,
+      "fnr": 0.02631578947368421,
+      "fpr": 0.6984126984126984,
+      "ppv": 0.4567901234567901,
+      "npv": 0.95,
+      "f1_score": 0.6218487394957983,
+      "f2_score": 0.7939914163090128,
+      "balanced_accuracy": 0.6376357560568087,
+      "mcc": 0.3346307403644138,
+      "accuracy": 0.5544554455445545,
+      "predicted_positive_count": 81.0,
+      "predicted_positive_rate": 0.801980198019802,
+      "tp_per_1000_lesions": 366.33663366336634,
+      "fp_per_1000_lesions": 435.64356435643566,
+      "fn_per_1000_lesions": 9.900990099009901
     }
   },
   "outputs": {
-    "output_directory": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h2_full_train",
+    "output_directory": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h2_full_train_20260829_144511",
     "csv_files": {
-      "model_metrics": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h2_full_train/model_metrics.csv",
-      "validation_threshold_metrics": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h2_full_train/validation_threshold_metrics.csv"
+      "model_metrics": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h2_full_train_20260829_144511/model_metrics.csv",
+      "validation_threshold_metrics": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h2_full_train_20260829_144511/validation_threshold_metrics.csv"
     },
     "figure_files": {
-      "precision_recall_curve": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h2_full_train/precision_recall_curve.jpg",
-      "roc_curve": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h2_full_train/roc_curve.jpg",
-      "pr_roc_curves": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h2_full_train/pr_roc_curves.jpg",
-      "clinical_summary": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h2_full_train/clinical_summary.jpg"
+      "precision_recall_curve": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h2_full_train_20260829_144511/precision_recall_curve.jpg",
+      "roc_curve": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h2_full_train_20260829_144511/roc_curve.jpg",
+      "pr_roc_curves": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h2_full_train_20260829_144511/pr_roc_curves.jpg",
+      "clinical_summary": "/Users/carlesraichbros/my-image-classifier/data/models/efficientnet_b0_image_h2_full_train_20260829_144511/clinical_summary.jpg"
     }
   }
 }
