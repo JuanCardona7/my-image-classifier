@@ -1,0 +1,66 @@
+{
+  "hypothesis": 2,
+  "target": "target_malignant",
+  "architecture": "efficientnet_b0",
+  "weights": "EfficientNet_B0_Weights.IMAGENET1K_V1",
+  "image_size": 136,
+  "image_manifest": "/Users/carlesraichbros/my-image-classifier/data/interim/images/raw_images_preprocessed_136_20260621_082715_manifest.json",
+  "image_timestamp_setting": null,
+  "train_full_lesions": 811,
+  "train_used_lesions": 811,
+  "train_max_lesions_setting": null,
+  "train_subsample_random_state": 42,
+  "random_state": 42,
+  "internal_holdout": {
+    "n_folds_used_to_define_holdout": 5,
+    "selected_fold_index": 0,
+    "train_lesions": 649,
+    "validation_lesions": 162,
+    "best_metrics": {
+      "pr_auc": 0.6979409792875979,
+      "roc_auc": 0.7696802467131958,
+      "brier_score": 0.19330312311649323
+    }
+  },
+  "class_imbalance": {
+    "pos_weight_mode": "full",
+    "internal_pos_weight": 1.6707818930041152,
+    "full_train_pos_weight": 1.667763157894737
+  },
+  "training": {
+    "batch_size": 32,
+    "num_workers": 0,
+    "warmup_learning_rate": 0.001,
+    "fine_tune_learning_rate": 5e-05,
+    "weight_decay": 0.0001,
+    "configured_warmup_epochs": 2,
+    "configured_max_fine_tune_epochs": 12,
+    "early_stopping_patience": 3,
+    "unfreeze_last_n_blocks": 4,
+    "selected_final_schedule": {
+      "warmup_epochs": 2,
+      "fine_tune_epochs": 8
+    },
+    "dropout": 0.4,
+    "mixed_precision": false,
+    "device": "cpu"
+  },
+  "augmentation": {
+    "horizontal_flip_probability": 0.5,
+    "vertical_flip_probability": 0.5,
+    "rotation_degrees": 15,
+    "brightness": 0.1,
+    "contrast": 0.1,
+    "saturation": 0.05,
+    "imagenet_mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "imagenet_std": [
+      0.229,
+      0.224,
+      0.225
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "hypothesis": 1,
+  "target": "target_biopsy",
+  "architecture": "efficientnet_b0",
+  "image_size": 136,
+  "weights": "EfficientNet_B0_Weights.IMAGENET1K_V1",
+  "train_max_lesions": null,
+  "random_state": 42,
+  "selected_internal_fold": 0,
+  "internal_best_metrics": {
+    "pr_auc": 0.02686477341970548,
+    "roc_auc": 0.7679877040585883,
+    "brier_score": 0.10512628402106226
+  },
+  "selected_schedule": {
+    "warmup_epochs": 2,
+    "fine_tune_epochs": 0
+  },
+  "batch_size": 64,
+  "warmup_lr": 0.001,
+  "fine_tune_lr": 0.0001,
+  "weight_decay": 0.0001,
+  "warmup_epochs": 2,
+  "max_fine_tune_epochs": 12,
+  "early_stopping_patience": 3,
+  "unfreeze_last_n_blocks": 2,
+  "pos_weight_mode": "full",
+  "internal_pos_weight": 376.1296296296296,
+  "full_train_pos_weight": 374.6453201970443,
+  "dropout": 0.2,
+  "gpu": "Tesla T4",
+  "train_split_path": "/content/drive/MyDrive/TFM_CLOUD/data/sets/train_split_h1_20260802_165612.parquet",
+  "validation_split_path": "/content/drive/MyDrive/TFM_CLOUD/data/sets/val_split_h1_20260802_165612.parquet",
+  "test_split_path": "/content/drive/MyDrive/TFM_CLOUD/data/sets/test_split_h1_20260802_165612.parquet",
+  "image_manifest_path": "/content/drive/MyDrive/TFM_CLOUD/data/images/raw_images_preprocessed_136_20260621_082715_manifest.json"
+}
