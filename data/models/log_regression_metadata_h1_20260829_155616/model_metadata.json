@@ -1,0 +1,25 @@
+{
+  "created_at": "2026-08-29T15:56:16+02:00",
+  "model": {
+    "model_name": "log_regression_metadata_h1",
+    "model_type": 1,
+    "framework": "scikit-learn",
+    "class_name": "Pipeline",
+    "class_module": "sklearn.pipeline",
+    "model_file": "model.joblib"
+  },
+  "evaluation": {
+    "evaluated_at": "2026-08-29T15:56:18+02:00",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy",
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.00015856387715504006,
+    "evaluation_metadata_file": "evaluation_metadata.json"
+  }
+}
