@@ -1,0 +1,107 @@
+{
+  "created_at": "2026-08-15T09:47:20-05:00",
+  "model": {
+    "model_name": "svm_metadata_h1",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy"
+  },
+  "evaluation": {
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.0005847052118993118
+  },
+  "train": {
+    "dataset_summary": {
+      "total_lesions": 305024,
+      "total_patients": 784,
+      "positive_lesions": 812,
+      "negative_lesions": 304212,
+      "patients_with_positive_lesion": 497,
+      "lesion_prevalence": 0.0026620856063785145,
+      "patient_prevalence": 0.6339285714285714
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.013809300723296149,
+      "roc_auc": 0.7071195335389326,
+      "brier_score": 0.002643421759618151
+    },
+    "threshold_metrics": {
+      "tp": 764.0,
+      "tn": 23050.0,
+      "fp": 281162.0,
+      "fn": 48.0,
+      "sensitivity": 0.9408866995073891,
+      "specificity": 0.07576952914414947,
+      "fnr": 0.059113300492610835,
+      "fpr": 0.9242304708558505,
+      "ppv": 0.0027099309747948045,
+      "npv": 0.9979218979998268,
+      "f1_score": 0.005404296557236736,
+      "f2_score": 0.013395330570108076,
+      "balanced_accuracy": 0.5083281143257693,
+      "mcc": 0.0032440542335116806,
+      "accuracy": 0.07807254511120436,
+      "predicted_positive_count": 281926.0,
+      "predicted_positive_rate": 0.9242748111624003,
+      "tp_per_1000_lesions": 2.5047209399916075,
+      "fp_per_1000_lesions": 921.7700902224087,
+      "fn_per_1000_lesions": 0.15736466638690724
+    }
+  },
+  "validation": {
+    "dataset_summary": {
+      "total_lesions": 38131,
+      "total_patients": 94,
+      "positive_lesions": 101,
+      "negative_lesions": 38030,
+      "patients_with_positive_lesion": 68,
+      "lesion_prevalence": 0.0026487634732894495,
+      "patient_prevalence": 0.723404255319149
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.006308358168725077,
+      "roc_auc": 0.6217951955595244,
+      "brier_score": 0.00264254187622353
+    },
+    "threshold_metrics": {
+      "tp": 96.0,
+      "tn": 5348.0,
+      "fp": 32682.0,
+      "fn": 5.0,
+      "sensitivity": 0.9504950495049505,
+      "specificity": 0.14062582171969498,
+      "fnr": 0.04950495049504951,
+      "fpr": 0.859374178280305,
+      "ppv": 0.0029287937030935385,
+      "npv": 0.9990659443302821,
+      "f1_score": 0.005839593661607714,
+      "f2_score": 0.014465674160689532,
+      "balanced_accuracy": 0.5455604356123227,
+      "mcc": 0.013481923730170065,
+      "accuracy": 0.1427709737483937,
+      "predicted_positive_count": 32778.0,
+      "predicted_positive_rate": 0.8596155359156592,
+      "tp_per_1000_lesions": 2.51763656867116,
+      "fp_per_1000_lesions": 857.097899346988,
+      "fn_per_1000_lesions": 0.13112690461828957
+    }
+  },
+  "outputs": {
+    "output_directory": "D:\\Workspace\\research\\ub_master_thesis\\my-image-classifier\\data\\models\\svm_metadata_h1_20260815_093802",
+    "csv_files": {
+      "model_metrics": "D:\\Workspace\\research\\ub_master_thesis\\my-image-classifier\\data\\models\\svm_metadata_h1_20260815_093802\\model_metrics.csv",
+      "validation_threshold_metrics": "D:\\Workspace\\research\\ub_master_thesis\\my-image-classifier\\data\\models\\svm_metadata_h1_20260815_093802\\validation_threshold_metrics.csv"
+    },
+    "figure_files": {
+      "precision_recall_curve": "D:\\Workspace\\research\\ub_master_thesis\\my-image-classifier\\data\\models\\svm_metadata_h1_20260815_093802\\precision_recall_curve.jpg",
+      "roc_curve": "D:\\Workspace\\research\\ub_master_thesis\\my-image-classifier\\data\\models\\svm_metadata_h1_20260815_093802\\roc_curve.jpg",
+      "pr_roc_curves": "D:\\Workspace\\research\\ub_master_thesis\\my-image-classifier\\data\\models\\svm_metadata_h1_20260815_093802\\pr_roc_curves.jpg",
+      "clinical_summary": "D:\\Workspace\\research\\ub_master_thesis\\my-image-classifier\\data\\models\\svm_metadata_h1_20260815_093802\\clinical_summary.jpg"
+    }
+  }
+}
