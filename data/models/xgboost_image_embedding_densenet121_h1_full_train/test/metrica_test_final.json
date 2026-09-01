@@ -1,0 +1,65 @@
+{
+  "created_at": "2026-09-01T13:42:50+02:00",
+  "model": {
+    "model_name": "xgboost_image_embedding_densenet121_h1_full_train",
+    "model_directory": "data/models/xgboost_image_embedding_densenet121_h1_full_train",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy"
+  },
+  "evaluation": {
+    "split": "test",
+    "threshold_source": "validation",
+    "selected_threshold": 0.021289169788360596,
+    "test_used_for_model_selection": false
+  },
+  "test": {
+    "dataset_summary": {
+      "total_lesions": 38125,
+      "total_patients": 99,
+      "positive_lesions": 100,
+      "negative_lesions": 38025,
+      "patients_with_positive_lesion": 64,
+      "lesion_prevalence": 0.002622950819672131,
+      "patient_prevalence": 0.6464646464646465
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.03891418645537886,
+      "roc_auc": 0.8825346482577253,
+      "brier_score": 0.01240211304098694
+    },
+    "threshold_metrics": {
+      "tp": 94.0,
+      "tn": 19121.0,
+      "fp": 18904.0,
+      "fn": 6.0,
+      "sensitivity": 0.94,
+      "specificity": 0.502853385930309,
+      "fnr": 0.06,
+      "fpr": 0.497146614069691,
+      "ppv": 0.004947889251500158,
+      "npv": 0.9996863073142678,
+      "f1_score": 0.00984396271860928,
+      "f2_score": 0.024229301989895865,
+      "balanced_accuracy": 0.7214266929651545,
+      "mcc": 0.0453019827404601,
+      "accuracy": 0.504,
+      "predicted_positive_count": 18998.0,
+      "predicted_positive_rate": 0.4983081967213115,
+      "tp_per_1000_lesions": 2.4655737704918033,
+      "fp_per_1000_lesions": 495.84262295081965,
+      "fn_per_1000_lesions": 0.15737704918032788
+    }
+  },
+  "outputs": {
+    "test_directory": "data/models/xgboost_image_embedding_densenet121_h1_full_train/test",
+    "test_predictions": "data/models/xgboost_image_embedding_densenet121_h1_full_train/test/test_predictions.parquet",
+    "test_metrics_csv": "data/models/xgboost_image_embedding_densenet121_h1_full_train/test/test_metrics.csv",
+    "figures": {
+      "precision_recall_curve": "data/models/xgboost_image_embedding_densenet121_h1_full_train/test/precision_recall_curve.jpg",
+      "roc_curve": "data/models/xgboost_image_embedding_densenet121_h1_full_train/test/roc_curve.jpg",
+      "pr_roc_curves": "data/models/xgboost_image_embedding_densenet121_h1_full_train/test/pr_roc_curves.jpg",
+      "clinical_summary": "data/models/xgboost_image_embedding_densenet121_h1_full_train/test/clinical_summary.jpg"
+    }
+  }
+}

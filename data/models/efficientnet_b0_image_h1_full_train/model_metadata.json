@@ -18,5 +18,11 @@
     "target_sensitivity": 0.95,
     "selected_threshold": 0.150691956281662,
     "evaluation_metadata_file": "evaluation_metadata.json"
+  },
+  "test_evaluation": {
+    "evaluated_at": "2026-09-01T13:51:13+02:00",
+    "metrics_file": "test/metrica_test_final.json",
+    "selected_threshold": 0.150691956281662,
+    "threshold_source": "validation"
   }
 }

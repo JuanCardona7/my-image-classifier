@@ -1,0 +1,65 @@
+{
+  "created_at": "2026-08-31T19:38:22+02:00",
+  "model": {
+    "model_name": "xgboost_metadata_h1",
+    "model_directory": "data/models/xgboost_metadata_h1",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy"
+  },
+  "evaluation": {
+    "split": "test",
+    "threshold_source": "validation",
+    "selected_threshold": 0.0011209757067263126,
+    "test_used_for_model_selection": false
+  },
+  "test": {
+    "dataset_summary": {
+      "total_lesions": 38125,
+      "total_patients": 99,
+      "positive_lesions": 100,
+      "negative_lesions": 38025,
+      "patients_with_positive_lesion": 64,
+      "lesion_prevalence": 0.002622950819672131,
+      "patient_prevalence": 0.6464646464646465
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.08515848379690658,
+      "roc_auc": 0.8390395792241946,
+      "brier_score": 0.002589482632981077
+    },
+    "threshold_metrics": {
+      "tp": 97.0,
+      "tn": 13100.0,
+      "fp": 24925.0,
+      "fn": 3.0,
+      "sensitivity": 0.97,
+      "specificity": 0.3445101906640368,
+      "fnr": 0.03,
+      "fpr": 0.6554898093359632,
+      "ppv": 0.0038765886020302133,
+      "npv": 0.999771044798901,
+      "f1_score": 0.007722315102300772,
+      "f2_score": 0.019077963968216507,
+      "balanced_accuracy": 0.6572550953320184,
+      "mcc": 0.033870604901586714,
+      "accuracy": 0.3461508196721311,
+      "predicted_positive_count": 25022.0,
+      "predicted_positive_rate": 0.6563147540983607,
+      "tp_per_1000_lesions": 2.5442622950819676,
+      "fp_per_1000_lesions": 653.7704918032787,
+      "fn_per_1000_lesions": 0.07868852459016394
+    }
+  },
+  "outputs": {
+    "test_directory": "data/models/xgboost_metadata_h1/test",
+    "test_predictions": "data/models/xgboost_metadata_h1/test/test_predictions.parquet",
+    "test_metrics_csv": "data/models/xgboost_metadata_h1/test/test_metrics.csv",
+    "figures": {
+      "precision_recall_curve": "data/models/xgboost_metadata_h1/test/precision_recall_curve.jpg",
+      "roc_curve": "data/models/xgboost_metadata_h1/test/roc_curve.jpg",
+      "pr_roc_curves": "data/models/xgboost_metadata_h1/test/pr_roc_curves.jpg",
+      "clinical_summary": "data/models/xgboost_metadata_h1/test/clinical_summary.jpg"
+    }
+  }
+}
