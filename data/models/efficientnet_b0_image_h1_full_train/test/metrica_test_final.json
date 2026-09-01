@@ -1,0 +1,65 @@
+{
+  "created_at": "2026-09-01T13:51:13+02:00",
+  "model": {
+    "model_name": "efficientnet_b0_image_h1_full_train",
+    "model_directory": "data/models/efficientnet_b0_image_h1_full_train",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy"
+  },
+  "evaluation": {
+    "split": "test",
+    "threshold_source": "validation",
+    "selected_threshold": 0.150691956281662,
+    "test_used_for_model_selection": false
+  },
+  "test": {
+    "dataset_summary": {
+      "total_lesions": 38125,
+      "total_patients": 99,
+      "positive_lesions": 100,
+      "negative_lesions": 38025,
+      "patients_with_positive_lesion": 64,
+      "lesion_prevalence": 0.002622950819672131,
+      "patient_prevalence": 0.6464646464646465
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.02374730196313285,
+      "roc_auc": 0.8455563445101907,
+      "brier_score": 0.13170755899083106
+    },
+    "threshold_metrics": {
+      "tp": 99.0,
+      "tn": 10280.0,
+      "fp": 27745.0,
+      "fn": 1.0,
+      "sensitivity": 0.99,
+      "specificity": 0.2703484549638396,
+      "fnr": 0.01,
+      "fpr": 0.7296515450361605,
+      "ppv": 0.0035555236316621177,
+      "npv": 0.9999027331971598,
+      "f1_score": 0.007085599770970513,
+      "f2_score": 0.01752584619742246,
+      "balanced_accuracy": 0.6301742274819198,
+      "mcc": 0.030005863131260465,
+      "accuracy": 0.2722360655737705,
+      "predicted_positive_count": 27844.0,
+      "predicted_positive_rate": 0.7303344262295082,
+      "tp_per_1000_lesions": 2.59672131147541,
+      "fp_per_1000_lesions": 727.7377049180328,
+      "fn_per_1000_lesions": 0.02622950819672131
+    }
+  },
+  "outputs": {
+    "test_directory": "data/models/efficientnet_b0_image_h1_full_train/test",
+    "test_predictions": "data/models/efficientnet_b0_image_h1_full_train/test/test_predictions.parquet",
+    "test_metrics_csv": "data/models/efficientnet_b0_image_h1_full_train/test/test_metrics.csv",
+    "figures": {
+      "precision_recall_curve": "data/models/efficientnet_b0_image_h1_full_train/test/precision_recall_curve.jpg",
+      "roc_curve": "data/models/efficientnet_b0_image_h1_full_train/test/roc_curve.jpg",
+      "pr_roc_curves": "data/models/efficientnet_b0_image_h1_full_train/test/pr_roc_curves.jpg",
+      "clinical_summary": "data/models/efficientnet_b0_image_h1_full_train/test/clinical_summary.jpg"
+    }
+  }
+}
