@@ -1,0 +1,25 @@
+{
+  "created_at": "2026-08-30T20:00:14+02:00",
+  "model": {
+    "model_name": "random_forest_metadata_h2",
+    "model_type": 1,
+    "framework": "scikit-learn",
+    "class_name": "RandomForestClassifier",
+    "class_module": "sklearn.ensemble._forest",
+    "model_file": "model.joblib"
+  },
+  "evaluation": {
+    "evaluated_at": "2026-08-30T20:00:15+02:00",
+    "hypothesis": 2,
+    "hypothesis_description": "Lesion suspected to be malignant",
+    "label_column": "target_malignant",
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.20160069902645866,
+    "evaluation_metadata_file": "evaluation_metadata.json"
+  }
+}
