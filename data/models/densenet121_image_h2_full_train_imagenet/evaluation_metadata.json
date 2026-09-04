@@ -1,0 +1,107 @@
+{
+  "created_at": "2026-09-03T23:21:10+00:00",
+  "model": {
+    "model_name": "densenet121_image_h2_full_train_imagenet",
+    "hypothesis": 2,
+    "hypothesis_description": "Lesion suspected to be malignant",
+    "label_column": "target_malignant"
+  },
+  "evaluation": {
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.16669368743896484
+  },
+  "train": {
+    "dataset_summary": {
+      "total_lesions": 811,
+      "total_patients": 504,
+      "positive_lesions": 304,
+      "negative_lesions": 507,
+      "patients_with_positive_lesion": 201,
+      "lesion_prevalence": 0.374845869297164,
+      "patient_prevalence": 0.39880952380952384
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.7506139375445808,
+      "roc_auc": 0.8284672480016609,
+      "brier_score": 0.1680163644570745
+    },
+    "threshold_metrics": {
+      "tp": 300.0,
+      "tn": 95.0,
+      "fp": 412.0,
+      "fn": 4.0,
+      "sensitivity": 0.9868421052631579,
+      "specificity": 0.1873767258382643,
+      "fnr": 0.013157894736842105,
+      "fpr": 0.8126232741617357,
+      "ppv": 0.42134831460674155,
+      "npv": 0.9595959595959596,
+      "f1_score": 0.5905511811023623,
+      "f2_score": 0.7780082987551866,
+      "balanced_accuracy": 0.5871094155507111,
+      "mcc": 0.25761922708985496,
+      "accuracy": 0.4870530209617756,
+      "predicted_positive_count": 712.0,
+      "predicted_positive_rate": 0.8779284833538841,
+      "tp_per_1000_lesions": 369.9136868064118,
+      "fp_per_1000_lesions": 508.01479654747226,
+      "fn_per_1000_lesions": 4.932182490752158
+    }
+  },
+  "validation": {
+    "dataset_summary": {
+      "total_lesions": 101,
+      "total_patients": 64,
+      "positive_lesions": 38,
+      "negative_lesions": 63,
+      "patients_with_positive_lesion": 22,
+      "lesion_prevalence": 0.37623762376237624,
+      "patient_prevalence": 0.34375
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.5357818214836085,
+      "roc_auc": 0.7084377610693401,
+      "brier_score": 0.2207290810444236
+    },
+    "threshold_metrics": {
+      "tp": 37.0,
+      "tn": 6.0,
+      "fp": 57.0,
+      "fn": 1.0,
+      "sensitivity": 0.9736842105263158,
+      "specificity": 0.09523809523809523,
+      "fnr": 0.02631578947368421,
+      "fpr": 0.9047619047619048,
+      "ppv": 0.39361702127659576,
+      "npv": 0.8571428571428571,
+      "f1_score": 0.5606060606060607,
+      "f2_score": 0.7520325203252033,
+      "balanced_accuracy": 0.5344611528822055,
+      "mcc": 0.1314646302770143,
+      "accuracy": 0.42574257425742573,
+      "predicted_positive_count": 94.0,
+      "predicted_positive_rate": 0.9306930693069307,
+      "tp_per_1000_lesions": 366.33663366336634,
+      "fp_per_1000_lesions": 564.3564356435643,
+      "fn_per_1000_lesions": 9.900990099009901
+    }
+  },
+  "outputs": {
+    "output_directory": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/densenet121_image_h2_full_train_imagenet",
+    "csv_files": {
+      "model_metrics": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/densenet121_image_h2_full_train_imagenet/model_metrics.csv",
+      "validation_threshold_metrics": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/densenet121_image_h2_full_train_imagenet/validation_threshold_metrics.csv"
+    },
+    "figure_files": {
+      "precision_recall_curve": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/densenet121_image_h2_full_train_imagenet/precision_recall_curve.jpg",
+      "roc_curve": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/densenet121_image_h2_full_train_imagenet/roc_curve.jpg",
+      "pr_roc_curves": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/densenet121_image_h2_full_train_imagenet/pr_roc_curves.jpg",
+      "clinical_summary": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/densenet121_image_h2_full_train_imagenet/clinical_summary.jpg"
+    }
+  }
+}

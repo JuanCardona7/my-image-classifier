@@ -1,0 +1,93 @@
+{
+  "hypothesis": 2,
+  "hypothesis_description": "Malignancy among biopsied lesions",
+  "target": "target_malignant",
+  "model_name": "convnext_tiny_image_h2_full_train_imagenet",
+  "architecture": "convnext_tiny",
+  "initialization": "imagenet",
+  "pretrained": true,
+  "training_regime": "imagenet_transfer_learning",
+  "train_all_layers": false,
+  "stage_definitions": {
+    "stage_1": "classifier_warmup",
+    "stage_2": "partial_fine_tuning"
+  },
+  "head dropout": 0.4,
+  "unfreeze_strategy": "last_convnext_stages",
+  "unfreeze_last_n_blocks": 2,
+  "effective_feature_training": "last_convnext_stages",
+  "image_size": 136,
+  "image_manifest": "/content/drive/MyDrive/TFM/my-image-classifier/data/interim/images/raw_images_preprocessed_136_20260828_211506_manifest.json",
+  "image_timestamp_setting": null,
+  "train_full_lesions": 811,
+  "train_used_lesions": 811,
+  "validation_lesions": 101,
+  "test_metadata_lesions": 101,
+  "train_max_lesions": null,
+  "train_subsample_random_state": 42,
+  "random_state": 42,
+  "device": "cuda",
+  "pytorch_version": "2.2.2+cu121",
+  "torchvision_version": "0.17.2+cu121",
+  "cuda_version": "12.1",
+  "internal_holdout": {
+    "n_folds": 5,
+    "selected_fold_index": 0,
+    "train_lesions": 649,
+    "validation_lesions": 162,
+    "best_metrics": {
+      "pr_auc": 0.7043363830305676,
+      "roc_auc": 0.7651355299464372,
+      "brier_score": 0.1912621110677719
+    }
+  },
+  "class_imbalance": {
+    "pos_weight_mode": "full",
+    "internal_pos_weight": 1.6707818930041152,
+    "final_pos_weight": 1.667763157894737
+  },
+  "training": {
+    "batch_size": 128,
+    "num_workers": 2,
+    "persistent_workers": false,
+    "prefetch_factor": 1,
+    "pin_memory": true,
+    "mixed_precision": true,
+    "warmup_learning_rate": 0.001,
+    "fine_tune_learning_rate": 5e-05,
+    "weight_decay": 0.0001,
+    "configured_warmup_epochs": 2,
+    "configured_max_fine_tune_epochs": 12,
+    "early_stopping_patience": 3,
+    "selected_final_schedule": {
+      "warmup_epochs": 2,
+      "fine_tune_epochs": 7
+    }
+  },
+  "evaluation": {
+    "primary_metric": "pr_auc",
+    "secondary_metrics": [
+      "roc_auc",
+      "brier_score"
+    ],
+    "target_sensitivity": 0.95
+  },
+  "augmentation": {
+    "horizontal_flip_probability": 0.5,
+    "vertical_flip_probability": 0.5,
+    "rotation_degrees": 15,
+    "brightness": 0.1,
+    "contrast": 0.1,
+    "saturation": 0.05,
+    "imagenet_mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "imagenet_std": [
+      0.229,
+      0.224,
+      0.225
+    ]
+  }
+}

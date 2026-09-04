@@ -1,0 +1,107 @@
+{
+  "created_at": "2026-09-03T04:26:37+00:00",
+  "model": {
+    "model_name": "convnext_tiny_image_h1_full_train_imagenet",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy"
+  },
+  "evaluation": {
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.06386636197566986
+  },
+  "train": {
+    "dataset_summary": {
+      "total_lesions": 305024,
+      "total_patients": 784,
+      "positive_lesions": 812,
+      "negative_lesions": 304212,
+      "patients_with_positive_lesion": 497,
+      "lesion_prevalence": 0.0026620856063785145,
+      "patient_prevalence": 0.6339285714285714
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.12047647163220118,
+      "roc_auc": 0.9415284325961693,
+      "brier_score": 0.11510656887119444
+    },
+    "threshold_metrics": {
+      "tp": 808.0,
+      "tn": 135460.0,
+      "fp": 168752.0,
+      "fn": 4.0,
+      "sensitivity": 0.9950738916256158,
+      "specificity": 0.4452815799508238,
+      "fnr": 0.0049261083743842365,
+      "fpr": 0.5547184200491763,
+      "ppv": 0.004765274828969096,
+      "npv": 0.9999704718596822,
+      "f1_score": 0.009485126664005823,
+      "f2_score": 0.02337854728947734,
+      "balanced_accuracy": 0.7201777357882198,
+      "mcc": 0.04566631106568208,
+      "accuracy": 0.4467451741502308,
+      "predicted_positive_count": 169560.0,
+      "predicted_positive_rate": 0.5558906840117499,
+      "tp_per_1000_lesions": 2.6489718841796055,
+      "fp_per_1000_lesions": 553.2417121275704,
+      "fn_per_1000_lesions": 0.013113722198908937
+    }
+  },
+  "validation": {
+    "dataset_summary": {
+      "total_lesions": 38131,
+      "total_patients": 94,
+      "positive_lesions": 101,
+      "negative_lesions": 38030,
+      "patients_with_positive_lesion": 68,
+      "lesion_prevalence": 0.0026487634732894495,
+      "patient_prevalence": 0.723404255319149
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.05317113819345727,
+      "roc_auc": 0.9064336909631011,
+      "brier_score": 0.11000082357079506
+    },
+    "threshold_metrics": {
+      "tp": 96.0,
+      "tn": 18863.0,
+      "fp": 19167.0,
+      "fn": 5.0,
+      "sensitivity": 0.9504950495049505,
+      "specificity": 0.4960031554036287,
+      "fnr": 0.04950495049504951,
+      "fpr": 0.5039968445963713,
+      "ppv": 0.004983647406945959,
+      "npv": 0.9997350010599958,
+      "f1_score": 0.009915306754802726,
+      "f2_score": 0.024406365993796714,
+      "balanced_accuracy": 0.7232491024542895,
+      "mcc": 0.04590063256736334,
+      "accuracy": 0.49720699693163045,
+      "predicted_positive_count": 19263.0,
+      "predicted_positive_rate": 0.5051795127324225,
+      "tp_per_1000_lesions": 2.51763656867116,
+      "fp_per_1000_lesions": 502.66187616375123,
+      "fn_per_1000_lesions": 0.13112690461828957
+    }
+  },
+  "outputs": {
+    "output_directory": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/convnext_tiny_image_h1_full_train_imagenet",
+    "csv_files": {
+      "model_metrics": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/convnext_tiny_image_h1_full_train_imagenet/model_metrics.csv",
+      "validation_threshold_metrics": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/convnext_tiny_image_h1_full_train_imagenet/validation_threshold_metrics.csv"
+    },
+    "figure_files": {
+      "precision_recall_curve": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/convnext_tiny_image_h1_full_train_imagenet/precision_recall_curve.jpg",
+      "roc_curve": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/convnext_tiny_image_h1_full_train_imagenet/roc_curve.jpg",
+      "pr_roc_curves": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/convnext_tiny_image_h1_full_train_imagenet/pr_roc_curves.jpg",
+      "clinical_summary": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/convnext_tiny_image_h1_full_train_imagenet/clinical_summary.jpg"
+    }
+  }
+}
