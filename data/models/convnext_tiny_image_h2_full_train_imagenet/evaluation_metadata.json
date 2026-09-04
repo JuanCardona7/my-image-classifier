@@ -1,0 +1,107 @@
+{
+  "created_at": "2026-09-03T23:23:44+00:00",
+  "model": {
+    "model_name": "convnext_tiny_image_h2_full_train_imagenet",
+    "hypothesis": 2,
+    "hypothesis_description": "Lesion suspected to be malignant",
+    "label_column": "target_malignant"
+  },
+  "evaluation": {
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "train",
+      "validation"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.1800512969493866
+  },
+  "train": {
+    "dataset_summary": {
+      "total_lesions": 811,
+      "total_patients": 504,
+      "positive_lesions": 304,
+      "negative_lesions": 507,
+      "patients_with_positive_lesion": 201,
+      "lesion_prevalence": 0.374845869297164,
+      "patient_prevalence": 0.39880952380952384
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.8452682751471234,
+      "roc_auc": 0.8888391466832763,
+      "brier_score": 0.14362561032590268
+    },
+    "threshold_metrics": {
+      "tp": 297.0,
+      "tn": 162.0,
+      "fp": 345.0,
+      "fn": 7.0,
+      "sensitivity": 0.9769736842105263,
+      "specificity": 0.31952662721893493,
+      "fnr": 0.023026315789473683,
+      "fpr": 0.6804733727810651,
+      "ppv": 0.46261682242990654,
+      "npv": 0.9585798816568047,
+      "f1_score": 0.627906976744186,
+      "f2_score": 0.7992465016146394,
+      "balanced_accuracy": 0.6482501557147307,
+      "mcc": 0.35339065343437215,
+      "accuracy": 0.5659679408138101,
+      "predicted_positive_count": 642.0,
+      "predicted_positive_rate": 0.7916152897657214,
+      "tp_per_1000_lesions": 366.2145499383477,
+      "fp_per_1000_lesions": 425.40073982737357,
+      "fn_per_1000_lesions": 8.631319358816276
+    }
+  },
+  "validation": {
+    "dataset_summary": {
+      "total_lesions": 101,
+      "total_patients": 64,
+      "positive_lesions": 38,
+      "negative_lesions": 63,
+      "patients_with_positive_lesion": 22,
+      "lesion_prevalence": 0.37623762376237624,
+      "patient_prevalence": 0.34375
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.6627872084696469,
+      "roc_auc": 0.7852965747702592,
+      "brier_score": 0.21113513285299018
+    },
+    "threshold_metrics": {
+      "tp": 37.0,
+      "tn": 17.0,
+      "fp": 46.0,
+      "fn": 1.0,
+      "sensitivity": 0.9736842105263158,
+      "specificity": 0.2698412698412698,
+      "fnr": 0.02631578947368421,
+      "fpr": 0.7301587301587301,
+      "ppv": 0.4457831325301205,
+      "npv": 0.9444444444444444,
+      "f1_score": 0.6115702479338843,
+      "f2_score": 0.7872340425531916,
+      "balanced_accuracy": 0.6217627401837929,
+      "mcc": 0.30826994361340176,
+      "accuracy": 0.5346534653465347,
+      "predicted_positive_count": 83.0,
+      "predicted_positive_rate": 0.8217821782178217,
+      "tp_per_1000_lesions": 366.33663366336634,
+      "fp_per_1000_lesions": 455.44554455445547,
+      "fn_per_1000_lesions": 9.900990099009901
+    }
+  },
+  "outputs": {
+    "output_directory": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/convnext_tiny_image_h2_full_train_imagenet",
+    "csv_files": {
+      "model_metrics": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/convnext_tiny_image_h2_full_train_imagenet/model_metrics.csv",
+      "validation_threshold_metrics": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/convnext_tiny_image_h2_full_train_imagenet/validation_threshold_metrics.csv"
+    },
+    "figure_files": {
+      "precision_recall_curve": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/convnext_tiny_image_h2_full_train_imagenet/precision_recall_curve.jpg",
+      "roc_curve": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/convnext_tiny_image_h2_full_train_imagenet/roc_curve.jpg",
+      "pr_roc_curves": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/convnext_tiny_image_h2_full_train_imagenet/pr_roc_curves.jpg",
+      "clinical_summary": "/content/drive/MyDrive/TFM/my-image-classifier/data/models/convnext_tiny_image_h2_full_train_imagenet/clinical_summary.jpg"
+    }
+  }
+}
