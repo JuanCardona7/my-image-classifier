@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-08-30T20:00:14+02:00",
+  "created_at": "2026-09-07T11:05:14+02:00",
   "model": {
     "model_name": "random_forest_metadata_h2",
     "model_type": 1,
@@ -8,8 +8,9 @@
     "class_module": "sklearn.ensemble._forest",
     "model_file": "model.joblib"
   },
+  "inference": null,
   "evaluation": {
-    "evaluated_at": "2026-08-30T20:00:15+02:00",
+    "evaluated_at": "2026-09-07T11:05:14+02:00",
     "hypothesis": 2,
     "hypothesis_description": "Lesion suspected to be malignant",
     "label_column": "target_malignant",
@@ -19,7 +20,7 @@
       "validation"
     ],
     "target_sensitivity": 0.95,
-    "selected_threshold": 0.20160069902645866,
+    "selected_threshold": 0.2836808800689537,
     "evaluation_metadata_file": "evaluation_metadata.json"
   }
 }
