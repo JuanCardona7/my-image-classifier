@@ -1154,9 +1154,17 @@ def _build_torchvision_binary_model(
 
         in_features = model.classifier[-1].in_features
 
-        model.classifier[-1] = nn.Linear(
-            in_features,
-            1,
+        # Training kept the stock LayerNorm2d and Flatten layers and inserted
+        # a Dropout before the binary Linear, so the head has four modules and
+        # the final layer is saved as classifier.3 rather than classifier.2.
+        model.classifier = nn.Sequential(
+            model.classifier[0],
+            model.classifier[1],
+            nn.Dropout(p=float(dropout)),
+            nn.Linear(
+                in_features,
+                1,
+            ),
         )
 
     else:
@@ -1252,7 +1260,8 @@ def _load_pytorch_model(
             "The saved PyTorch state_dict does not match the "
             f"reconstructed '{architecture}' classifier. "
             "No model was retrained. Provide the exact architecture "
-            "through inference_config.json or MODEL_OVERRIDES."
+            "through inference_config.json or MODEL_OVERRIDES.\n"
+            f"Original error: {exc}"
         ) from exc
 
     model = model.to(device)
