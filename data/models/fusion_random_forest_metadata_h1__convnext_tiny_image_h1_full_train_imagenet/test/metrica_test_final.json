@@ -1,0 +1,65 @@
+{
+  "created_at": "2026-09-08T18:24:02+02:00",
+  "model": {
+    "model_name": "fusion_random_forest_metadata_h1__convnext_tiny_image_h1_full_train_imagenet",
+    "model_directory": "data\\models\\fusion_random_forest_metadata_h1__convnext_tiny_image_h1_full_train_imagenet",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy"
+  },
+  "evaluation": {
+    "split": "test",
+    "threshold_source": "validation",
+    "selected_threshold": 0.15234045685492936,
+    "test_used_for_model_selection": false
+  },
+  "test": {
+    "dataset_summary": {
+      "total_lesions": 38125,
+      "total_patients": 99,
+      "positive_lesions": 100,
+      "negative_lesions": 38025,
+      "patients_with_positive_lesion": 64,
+      "lesion_prevalence": 0.002622950819672131,
+      "patient_prevalence": 0.6464646464646465
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.10908154393576368,
+      "roc_auc": 0.9245422748191979,
+      "brier_score": 0.03992352467558552
+    },
+    "threshold_metrics": {
+      "tp": 96.0,
+      "tn": 24962.0,
+      "fp": 13063.0,
+      "fn": 4.0,
+      "sensitivity": 0.96,
+      "specificity": 0.6564628533859304,
+      "fnr": 0.04,
+      "fpr": 0.3435371466140697,
+      "ppv": 0.007295387187476252,
+      "npv": 0.999839782103661,
+      "f1_score": 0.014480730070141036,
+      "f2_score": 0.035400840769968286,
+      "balanced_accuracy": 0.8082314266929651,
+      "mcc": 0.066321691931118,
+      "accuracy": 0.6572590163934426,
+      "predicted_positive_count": 13159.0,
+      "predicted_positive_rate": 0.34515409836065575,
+      "tp_per_1000_lesions": 2.518032786885246,
+      "fp_per_1000_lesions": 342.63606557377045,
+      "fn_per_1000_lesions": 0.10491803278688525
+    }
+  },
+  "outputs": {
+    "test_directory": "data\\models\\fusion_random_forest_metadata_h1__convnext_tiny_image_h1_full_train_imagenet\\test",
+    "test_predictions": "data\\models\\fusion_random_forest_metadata_h1__convnext_tiny_image_h1_full_train_imagenet\\test\\test_predictions.parquet",
+    "test_metrics_csv": "data\\models\\fusion_random_forest_metadata_h1__convnext_tiny_image_h1_full_train_imagenet\\test\\test_metrics.csv",
+    "figures": {
+      "precision_recall_curve": "data\\models\\fusion_random_forest_metadata_h1__convnext_tiny_image_h1_full_train_imagenet\\test\\precision_recall_curve.jpg",
+      "roc_curve": "data\\models\\fusion_random_forest_metadata_h1__convnext_tiny_image_h1_full_train_imagenet\\test\\roc_curve.jpg",
+      "pr_roc_curves": "data\\models\\fusion_random_forest_metadata_h1__convnext_tiny_image_h1_full_train_imagenet\\test\\pr_roc_curves.jpg",
+      "clinical_summary": "data\\models\\fusion_random_forest_metadata_h1__convnext_tiny_image_h1_full_train_imagenet\\test\\clinical_summary.jpg"
+    }
+  }
+}
