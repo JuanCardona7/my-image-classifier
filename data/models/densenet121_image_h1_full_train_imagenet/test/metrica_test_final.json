@@ -1,0 +1,65 @@
+{
+  "created_at": "2026-09-08T20:45:06+02:00",
+  "model": {
+    "model_name": "densenet121_image_h1_full_train_imagenet",
+    "model_directory": "data\\models\\densenet121_image_h1_full_train_imagenet",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy"
+  },
+  "evaluation": {
+    "split": "test",
+    "threshold_source": "validation",
+    "selected_threshold": 0.23642036318778992,
+    "test_used_for_model_selection": false
+  },
+  "test": {
+    "dataset_summary": {
+      "total_lesions": 38125,
+      "total_patients": 99,
+      "positive_lesions": 100,
+      "negative_lesions": 38025,
+      "patients_with_positive_lesion": 64,
+      "lesion_prevalence": 0.002622950819672131,
+      "patient_prevalence": 0.6464646464646465
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.05307994075570516,
+      "roc_auc": 0.8972681130834976,
+      "brier_score": 0.15543826396835658
+    },
+    "threshold_metrics": {
+      "tp": 94.0,
+      "tn": 24691.0,
+      "fp": 13334.0,
+      "fn": 6.0,
+      "sensitivity": 0.94,
+      "specificity": 0.6493359631821171,
+      "fnr": 0.06,
+      "fpr": 0.350664036817883,
+      "ppv": 0.007000297885016384,
+      "npv": 0.9997570555128154,
+      "f1_score": 0.013897102306327616,
+      "f2_score": 0.03398900781024009,
+      "balanced_accuracy": 0.7946679815910584,
+      "mcc": 0.06310587431668385,
+      "accuracy": 0.6500983606557377,
+      "predicted_positive_count": 13428.0,
+      "predicted_positive_rate": 0.35220983606557377,
+      "tp_per_1000_lesions": 2.4655737704918033,
+      "fp_per_1000_lesions": 349.74426229508197,
+      "fn_per_1000_lesions": 0.15737704918032788
+    }
+  },
+  "outputs": {
+    "test_directory": "data\\models\\densenet121_image_h1_full_train_imagenet\\test",
+    "test_predictions": "data\\models\\densenet121_image_h1_full_train_imagenet\\test\\test_predictions.parquet",
+    "test_metrics_csv": "data\\models\\densenet121_image_h1_full_train_imagenet\\test\\test_metrics.csv",
+    "figures": {
+      "precision_recall_curve": "data\\models\\densenet121_image_h1_full_train_imagenet\\test\\precision_recall_curve.jpg",
+      "roc_curve": "data\\models\\densenet121_image_h1_full_train_imagenet\\test\\roc_curve.jpg",
+      "pr_roc_curves": "data\\models\\densenet121_image_h1_full_train_imagenet\\test\\pr_roc_curves.jpg",
+      "clinical_summary": "data\\models\\densenet121_image_h1_full_train_imagenet\\test\\clinical_summary.jpg"
+    }
+  }
+}

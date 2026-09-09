@@ -1,0 +1,65 @@
+{
+  "created_at": "2026-09-08T21:19:55+02:00",
+  "model": {
+    "model_name": "resnet50_image_h1_full_train_imagenet",
+    "model_directory": "data\\models\\resnet50_image_h1_full_train_imagenet",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy"
+  },
+  "evaluation": {
+    "split": "test",
+    "threshold_source": "validation",
+    "selected_threshold": 0.0813327431678772,
+    "test_used_for_model_selection": false
+  },
+  "test": {
+    "dataset_summary": {
+      "total_lesions": 38125,
+      "total_patients": 99,
+      "positive_lesions": 100,
+      "negative_lesions": 38025,
+      "patients_with_positive_lesion": 64,
+      "lesion_prevalence": 0.002622950819672131,
+      "patient_prevalence": 0.6464646464646465
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.05274029354291714,
+      "roc_auc": 0.9067087442472058,
+      "brier_score": 0.14583056852939683
+    },
+    "threshold_metrics": {
+      "tp": 95.0,
+      "tn": 19738.0,
+      "fp": 18287.0,
+      "fn": 5.0,
+      "sensitivity": 0.95,
+      "specificity": 0.5190795529257067,
+      "fnr": 0.05,
+      "fpr": 0.4809204470742932,
+      "ppv": 0.005168099227505168,
+      "npv": 0.9997467456820138,
+      "f1_score": 0.010280272697759983,
+      "f2_score": 0.025290171440741138,
+      "balanced_accuracy": 0.7345397764628534,
+      "mcc": 0.048015135664250495,
+      "accuracy": 0.5202098360655738,
+      "predicted_positive_count": 18382.0,
+      "predicted_positive_rate": 0.48215081967213114,
+      "tp_per_1000_lesions": 2.4918032786885242,
+      "fp_per_1000_lesions": 479.6590163934426,
+      "fn_per_1000_lesions": 0.13114754098360656
+    }
+  },
+  "outputs": {
+    "test_directory": "data\\models\\resnet50_image_h1_full_train_imagenet\\test",
+    "test_predictions": "data\\models\\resnet50_image_h1_full_train_imagenet\\test\\test_predictions.parquet",
+    "test_metrics_csv": "data\\models\\resnet50_image_h1_full_train_imagenet\\test\\test_metrics.csv",
+    "figures": {
+      "precision_recall_curve": "data\\models\\resnet50_image_h1_full_train_imagenet\\test\\precision_recall_curve.jpg",
+      "roc_curve": "data\\models\\resnet50_image_h1_full_train_imagenet\\test\\roc_curve.jpg",
+      "pr_roc_curves": "data\\models\\resnet50_image_h1_full_train_imagenet\\test\\pr_roc_curves.jpg",
+      "clinical_summary": "data\\models\\resnet50_image_h1_full_train_imagenet\\test\\clinical_summary.jpg"
+    }
+  }
+}

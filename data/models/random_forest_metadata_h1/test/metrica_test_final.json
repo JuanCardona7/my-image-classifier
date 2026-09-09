@@ -1,0 +1,65 @@
+{
+  "created_at": "2026-09-08T18:13:41+02:00",
+  "model": {
+    "model_name": "random_forest_metadata_h1",
+    "model_directory": "data\\models\\random_forest_metadata_h1",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy"
+  },
+  "evaluation": {
+    "split": "test",
+    "threshold_source": "validation",
+    "selected_threshold": 0.030001941196766104,
+    "test_used_for_model_selection": false
+  },
+  "test": {
+    "dataset_summary": {
+      "total_lesions": 38125,
+      "total_patients": 99,
+      "positive_lesions": 100,
+      "negative_lesions": 38025,
+      "patients_with_positive_lesion": 64,
+      "lesion_prevalence": 0.002622950819672131,
+      "patient_prevalence": 0.6464646464646465
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.07295437847707778,
+      "roc_auc": 0.8375898750821829,
+      "brier_score": 0.005346347365766025
+    },
+    "threshold_metrics": {
+      "tp": 95.0,
+      "tn": 16724.0,
+      "fp": 21301.0,
+      "fn": 5.0,
+      "sensitivity": 0.95,
+      "specificity": 0.43981591058514136,
+      "fnr": 0.05,
+      "fpr": 0.5601840894148586,
+      "ppv": 0.00444008225836605,
+      "npv": 0.9997011178193556,
+      "f1_score": 0.00883885374023074,
+      "f2_score": 0.02179298953936502,
+      "balanced_accuracy": 0.6949079552925707,
+      "mcc": 0.04017842305532071,
+      "accuracy": 0.4411540983606557,
+      "predicted_positive_count": 21396.0,
+      "predicted_positive_rate": 0.5612065573770492,
+      "tp_per_1000_lesions": 2.4918032786885242,
+      "fp_per_1000_lesions": 558.7147540983607,
+      "fn_per_1000_lesions": 0.13114754098360656
+    }
+  },
+  "outputs": {
+    "test_directory": "data\\models\\random_forest_metadata_h1\\test",
+    "test_predictions": "data\\models\\random_forest_metadata_h1\\test\\test_predictions.parquet",
+    "test_metrics_csv": "data\\models\\random_forest_metadata_h1\\test\\test_metrics.csv",
+    "figures": {
+      "precision_recall_curve": "data\\models\\random_forest_metadata_h1\\test\\precision_recall_curve.jpg",
+      "roc_curve": "data\\models\\random_forest_metadata_h1\\test\\roc_curve.jpg",
+      "pr_roc_curves": "data\\models\\random_forest_metadata_h1\\test\\pr_roc_curves.jpg",
+      "clinical_summary": "data\\models\\random_forest_metadata_h1\\test\\clinical_summary.jpg"
+    }
+  }
+}

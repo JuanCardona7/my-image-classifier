@@ -1,0 +1,65 @@
+{
+  "created_at": "2026-09-08T18:24:01+02:00",
+  "model": {
+    "model_name": "convnext_tiny_image_h1_full_train_imagenet",
+    "model_directory": "data\\models\\convnext_tiny_image_h1_full_train_imagenet",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy"
+  },
+  "evaluation": {
+    "split": "test",
+    "threshold_source": "validation",
+    "selected_threshold": 0.06386636197566986,
+    "test_used_for_model_selection": false
+  },
+  "test": {
+    "dataset_summary": {
+      "total_lesions": 38125,
+      "total_patients": 99,
+      "positive_lesions": 100,
+      "negative_lesions": 38025,
+      "patients_with_positive_lesion": 64,
+      "lesion_prevalence": 0.002622950819672131,
+      "patient_prevalence": 0.6464646464646465
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.09361956675694783,
+      "roc_auc": 0.9014410256410256,
+      "brier_score": 0.1268421362368478
+    },
+    "threshold_metrics": {
+      "tp": 100.0,
+      "tn": 16088.0,
+      "fp": 21937.0,
+      "fn": 0.0,
+      "sensitivity": 1.0,
+      "specificity": 0.42309007232084156,
+      "fnr": 0.0,
+      "fpr": 0.5769099276791585,
+      "ppv": 0.004537822752643281,
+      "npv": 1.0,
+      "f1_score": 0.009034647874599086,
+      "f2_score": 0.022284619155858623,
+      "balanced_accuracy": 0.7115450361604208,
+      "mcc": 0.04381675200873527,
+      "accuracy": 0.4246032786885246,
+      "predicted_positive_count": 22037.0,
+      "predicted_positive_rate": 0.5780196721311476,
+      "tp_per_1000_lesions": 2.622950819672131,
+      "fp_per_1000_lesions": 575.3967213114754,
+      "fn_per_1000_lesions": 0.0
+    }
+  },
+  "outputs": {
+    "test_directory": "data\\models\\convnext_tiny_image_h1_full_train_imagenet\\test",
+    "test_predictions": "data\\models\\convnext_tiny_image_h1_full_train_imagenet\\test\\test_predictions.parquet",
+    "test_metrics_csv": "data\\models\\convnext_tiny_image_h1_full_train_imagenet\\test\\test_metrics.csv",
+    "figures": {
+      "precision_recall_curve": "data\\models\\convnext_tiny_image_h1_full_train_imagenet\\test\\precision_recall_curve.jpg",
+      "roc_curve": "data\\models\\convnext_tiny_image_h1_full_train_imagenet\\test\\roc_curve.jpg",
+      "pr_roc_curves": "data\\models\\convnext_tiny_image_h1_full_train_imagenet\\test\\pr_roc_curves.jpg",
+      "clinical_summary": "data\\models\\convnext_tiny_image_h1_full_train_imagenet\\test\\clinical_summary.jpg"
+    }
+  }
+}

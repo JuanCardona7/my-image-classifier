@@ -1,0 +1,65 @@
+{
+  "created_at": "2026-09-09T17:19:53+02:00",
+  "model": {
+    "model_name": "svm_metadata_h1",
+    "model_directory": "data\\models\\svm_metadata_h1_full_train",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy"
+  },
+  "evaluation": {
+    "split": "test",
+    "threshold_source": "validation",
+    "selected_threshold": 0.0009666293433116189,
+    "test_used_for_model_selection": false
+  },
+  "test": {
+    "dataset_summary": {
+      "total_lesions": 38125,
+      "total_patients": 99,
+      "positive_lesions": 100,
+      "negative_lesions": 38025,
+      "patients_with_positive_lesion": 64,
+      "lesion_prevalence": 0.002622950819672131,
+      "patient_prevalence": 0.6464646464646465
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.0346559924481141,
+      "roc_auc": 0.8279184746877055,
+      "brier_score": 0.002585046476678141
+    },
+    "threshold_metrics": {
+      "tp": 96.0,
+      "tn": 9777.0,
+      "fp": 28248.0,
+      "fn": 4.0,
+      "sensitivity": 0.96,
+      "specificity": 0.25712031558185405,
+      "fnr": 0.04,
+      "fpr": 0.742879684418146,
+      "ppv": 0.003386960203217612,
+      "npv": 0.999591043860546,
+      "f1_score": 0.006750105470397975,
+      "f2_score": 0.016699137211244088,
+      "balanced_accuracy": 0.608560157790927,
+      "mcc": 0.025428039289893938,
+      "accuracy": 0.2589639344262295,
+      "predicted_positive_count": 28344.0,
+      "predicted_positive_rate": 0.7434491803278689,
+      "tp_per_1000_lesions": 2.518032786885246,
+      "fp_per_1000_lesions": 740.9311475409836,
+      "fn_per_1000_lesions": 0.10491803278688525
+    }
+  },
+  "outputs": {
+    "test_directory": "data\\models\\svm_metadata_h1_full_train\\test",
+    "test_predictions": "data\\models\\svm_metadata_h1_full_train\\test\\test_predictions.parquet",
+    "test_metrics_csv": "data\\models\\svm_metadata_h1_full_train\\test\\test_metrics.csv",
+    "figures": {
+      "precision_recall_curve": "data\\models\\svm_metadata_h1_full_train\\test\\precision_recall_curve.jpg",
+      "roc_curve": "data\\models\\svm_metadata_h1_full_train\\test\\roc_curve.jpg",
+      "pr_roc_curves": "data\\models\\svm_metadata_h1_full_train\\test\\pr_roc_curves.jpg",
+      "clinical_summary": "data\\models\\svm_metadata_h1_full_train\\test\\clinical_summary.jpg"
+    }
+  }
+}
