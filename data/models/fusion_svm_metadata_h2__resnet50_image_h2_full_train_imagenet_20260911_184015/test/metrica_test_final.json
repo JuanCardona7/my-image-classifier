@@ -1,0 +1,65 @@
+{
+  "created_at": "2026-09-11T18:40:16+02:00",
+  "model": {
+    "model_name": "fusion_svm_metadata_h2__resnet50_image_h2_full_train_imagenet_20260911_184015",
+    "model_directory": "data\\models\\fusion_svm_metadata_h2__resnet50_image_h2_full_train_imagenet_20260911_184015",
+    "hypothesis": 2,
+    "hypothesis_description": "Lesion suspected to be malignant",
+    "label_column": "target_malignant"
+  },
+  "evaluation": {
+    "split": "test",
+    "threshold_source": "validation",
+    "selected_threshold": 0.13282475094456309,
+    "test_used_for_model_selection": false
+  },
+  "test": {
+    "dataset_summary": {
+      "total_lesions": 101,
+      "total_patients": 61,
+      "positive_lesions": 38,
+      "negative_lesions": 63,
+      "patients_with_positive_lesion": 25,
+      "lesion_prevalence": 0.37623762376237624,
+      "patient_prevalence": 0.4098360655737705
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.5983541218444202,
+      "roc_auc": 0.7518796992481203,
+      "brier_score": 0.2001512499632752
+    },
+    "threshold_metrics": {
+      "tp": 37.0,
+      "tn": 9.0,
+      "fp": 54.0,
+      "fn": 1.0,
+      "sensitivity": 0.9736842105263158,
+      "specificity": 0.14285714285714285,
+      "fnr": 0.02631578947368421,
+      "fpr": 0.8571428571428571,
+      "ppv": 0.4065934065934066,
+      "npv": 0.9,
+      "f1_score": 0.5736434108527132,
+      "f2_score": 0.7613168724279835,
+      "balanced_accuracy": 0.5582706766917294,
+      "mcc": 0.18902595203527112,
+      "accuracy": 0.45544554455445546,
+      "predicted_positive_count": 91.0,
+      "predicted_positive_rate": 0.900990099009901,
+      "tp_per_1000_lesions": 366.33663366336634,
+      "fp_per_1000_lesions": 534.6534653465346,
+      "fn_per_1000_lesions": 9.900990099009901
+    }
+  },
+  "outputs": {
+    "test_directory": "data\\models\\fusion_svm_metadata_h2__resnet50_image_h2_full_train_imagenet_20260911_184015\\test",
+    "test_predictions": "data\\models\\fusion_svm_metadata_h2__resnet50_image_h2_full_train_imagenet_20260911_184015\\test\\test_predictions.parquet",
+    "test_metrics_csv": "data\\models\\fusion_svm_metadata_h2__resnet50_image_h2_full_train_imagenet_20260911_184015\\test\\test_metrics.csv",
+    "figures": {
+      "precision_recall_curve": "data\\models\\fusion_svm_metadata_h2__resnet50_image_h2_full_train_imagenet_20260911_184015\\test\\precision_recall_curve.jpg",
+      "roc_curve": "data\\models\\fusion_svm_metadata_h2__resnet50_image_h2_full_train_imagenet_20260911_184015\\test\\roc_curve.jpg",
+      "pr_roc_curves": "data\\models\\fusion_svm_metadata_h2__resnet50_image_h2_full_train_imagenet_20260911_184015\\test\\pr_roc_curves.jpg",
+      "clinical_summary": "data\\models\\fusion_svm_metadata_h2__resnet50_image_h2_full_train_imagenet_20260911_184015\\test\\clinical_summary.jpg"
+    }
+  }
+}
