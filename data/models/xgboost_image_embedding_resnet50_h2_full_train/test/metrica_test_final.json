@@ -1,0 +1,65 @@
+{
+  "created_at": "2026-09-12T09:06:53+02:00",
+  "model": {
+    "model_name": "xgboost_image_embedding_resnet50_h2_full_train",
+    "model_directory": "data/models/xgboost_image_embedding_resnet50_h2_full_train",
+    "hypothesis": 2,
+    "hypothesis_description": "Lesion suspected to be malignant",
+    "label_column": "target_malignant"
+  },
+  "evaluation": {
+    "split": "test",
+    "threshold_source": "validation",
+    "selected_threshold": 0.06701188534498215,
+    "test_used_for_model_selection": false
+  },
+  "test": {
+    "dataset_summary": {
+      "total_lesions": 101,
+      "total_patients": 61,
+      "positive_lesions": 38,
+      "negative_lesions": 63,
+      "patients_with_positive_lesion": 25,
+      "lesion_prevalence": 0.37623762376237624,
+      "patient_prevalence": 0.4098360655737705
+    },
+    "threshold_free_metrics": {
+      "pr_auc": 0.6113889721614942,
+      "roc_auc": 0.7573099415204678,
+      "brier_score": 0.20305983871677158
+    },
+    "threshold_metrics": {
+      "tp": 36.0,
+      "tn": 17.0,
+      "fp": 46.0,
+      "fn": 2.0,
+      "sensitivity": 0.9473684210526315,
+      "specificity": 0.2698412698412698,
+      "fnr": 0.05263157894736842,
+      "fpr": 0.7301587301587301,
+      "ppv": 0.43902439024390244,
+      "npv": 0.8947368421052632,
+      "f1_score": 0.6,
+      "f2_score": 0.7692307692307693,
+      "balanced_accuracy": 0.6086048454469507,
+      "mcc": 0.26925113576534804,
+      "accuracy": 0.5247524752475248,
+      "predicted_positive_count": 82.0,
+      "predicted_positive_rate": 0.8118811881188119,
+      "tp_per_1000_lesions": 356.43564356435644,
+      "fp_per_1000_lesions": 455.44554455445547,
+      "fn_per_1000_lesions": 19.801980198019802
+    }
+  },
+  "outputs": {
+    "test_directory": "data/models/xgboost_image_embedding_resnet50_h2_full_train/test",
+    "test_predictions": "data/models/xgboost_image_embedding_resnet50_h2_full_train/test/test_predictions.parquet",
+    "test_metrics_csv": "data/models/xgboost_image_embedding_resnet50_h2_full_train/test/test_metrics.csv",
+    "figures": {
+      "precision_recall_curve": "data/models/xgboost_image_embedding_resnet50_h2_full_train/test/precision_recall_curve.jpg",
+      "roc_curve": "data/models/xgboost_image_embedding_resnet50_h2_full_train/test/roc_curve.jpg",
+      "pr_roc_curves": "data/models/xgboost_image_embedding_resnet50_h2_full_train/test/pr_roc_curves.jpg",
+      "clinical_summary": "data/models/xgboost_image_embedding_resnet50_h2_full_train/test/clinical_summary.jpg"
+    }
+  }
+}
