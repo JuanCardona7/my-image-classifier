@@ -1,0 +1,35 @@
+{
+  "created_at": "2026-09-10T05:18:53+02:00",
+  "model": {
+    "model_name": "fusion_xgboost_metadata_h1__convnext_tiny_image_h1_full_train_imagenet",
+    "model_type": 4,
+    "framework": "fusion",
+    "class_name": "ProbabilityFusionModel",
+    "class_module": "skin_lesion_ai.inference.final_models",
+    "model_file": "fusion_model.joblib"
+  },
+  "inference": {
+    "input_kind": "multimodal_probability_fusion",
+    "metadata_model_directory": "data\\models\\xgboost_metadata_h1",
+    "image_model_directory": "data\\models\\convnext_tiny_image_h1_full_train_imagenet"
+  },
+  "evaluation": {
+    "evaluated_at": "2026-09-10T05:18:53+02:00",
+    "hypothesis": 1,
+    "hypothesis_description": "Lesion recommended for biopsy",
+    "label_column": "target_biopsy",
+    "threshold_selection_split": "validation",
+    "threshold_applied_to": [
+      "validation",
+      "test"
+    ],
+    "target_sensitivity": 0.95,
+    "selected_threshold": 0.0003997201852050265
+  },
+  "test_evaluation": {
+    "evaluated_at": "2026-09-10T05:18:53+02:00",
+    "metrics_file": "test\\metrica_test_final.json",
+    "selected_threshold": 0.0003997201852050265,
+    "threshold_source": "validation"
+  }
+}

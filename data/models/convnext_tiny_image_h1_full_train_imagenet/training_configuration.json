@@ -12,7 +12,7 @@
     "stage_1": "classifier_warmup",
     "stage_2": "partial_fine_tuning"
   },
-  "head dropout": 0.4,
+  "dropout": 0.4,
   "unfreeze_strategy": "last_convnext_stages",
   "unfreeze_last_n_blocks": 2,
   "effective_feature_training": "last_convnext_stages",

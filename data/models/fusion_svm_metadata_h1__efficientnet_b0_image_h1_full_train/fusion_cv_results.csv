@@ -1,0 +1,7 @@
+method,candidate_type,pr_auc,roc_auc,brier_score,best_fusion,selected_overall
+metadata_only,base_model,0.0236266386,0.7618131074,0.002642214474,False,False
+image_only,base_model,0.02526019246,0.8316558319,0.1331828705,False,False
+simple_average,fusion,0.03771814353,0.8346198806,0.03496777537,True,True
+weighted_average,fusion,0.03135737011,0.8206965319,0.00588407236,False,False
+logistic_stacking,fusion,0.02445717058,0.8264744092,0.002612087987,False,False
+interaction_stacking,fusion,0.02387053347,0.8230557949,0.002611566367,False,False
