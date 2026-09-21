@@ -1,0 +1,113 @@
+{
+  "created_at": "2026-09-11T17:58:55+02:00",
+  "base_models": {
+    "metadata": {
+      "directory": "data\\models\\random_forest_metadata_h2",
+      "model_name": "random_forest_metadata_h2"
+    },
+    "image": {
+      "directory": "data\\models\\convnext_tiny_image_h2_full_train_imagenet",
+      "model_name": "convnext_tiny_image_h2_full_train_imagenet"
+    }
+  },
+  "selection": {
+    "dataset": "validation",
+    "cv": "StratifiedGroupKFold",
+    "group": "patient_id",
+    "n_splits": 5,
+    "shuffle": true,
+    "random_state": 42,
+    "selection_hierarchy": [
+      "pr_auc_max",
+      "roc_auc_max",
+      "brier_score_min"
+    ],
+    "weight_grid_step": 0.01,
+    "min_pr_auc_gain": 0.01,
+    "fusion_pr_auc_gain": 0.052263087036711564,
+    "candidate_metrics": {
+      "metadata_only": {
+        "pr_auc": 0.5913403817032598,
+        "roc_auc": 0.7397660818713451,
+        "brier_score": 0.2077772875814621
+      },
+      "image_only": {
+        "pr_auc": 0.6627872084696469,
+        "roc_auc": 0.7852965747702592,
+        "brier_score": 0.21113512542703736
+      },
+      "simple_average": {
+        "pr_auc": 0.7150502955063585,
+        "roc_auc": 0.7919799498746868,
+        "brier_score": 0.1969660188420202
+      },
+      "weighted_average": {
+        "pr_auc": 0.6291160768193721,
+        "roc_auc": 0.7811194653299917,
+        "brier_score": 0.20193419319230588
+      },
+      "logistic_stacking": {
+        "pr_auc": 0.5283728272469921,
+        "roc_auc": 0.7389306599832915,
+        "brier_score": 0.1974463875801812
+      },
+      "interaction_stacking": {
+        "pr_auc": 0.5510808980639021,
+        "roc_auc": 0.7527151211361738,
+        "brier_score": 0.19373742806250624
+      }
+    },
+    "best_base_method": "image_only",
+    "best_fusion_method": "simple_average",
+    "selected_method": "simple_average",
+    "fold_details": [
+      {
+        "fold": 0,
+        "fit_lesions": 76,
+        "holdout_lesions": 25,
+        "fit_patients": 56,
+        "holdout_patients": 8,
+        "weighted_average_metadata_weight": 0.6900000000000001
+      },
+      {
+        "fold": 1,
+        "fit_lesions": 80,
+        "holdout_lesions": 21,
+        "fit_patients": 50,
+        "holdout_patients": 14,
+        "weighted_average_metadata_weight": 0.44
+      },
+      {
+        "fold": 2,
+        "fit_lesions": 82,
+        "holdout_lesions": 19,
+        "fit_patients": 50,
+        "holdout_patients": 14,
+        "weighted_average_metadata_weight": 0.43
+      },
+      {
+        "fold": 3,
+        "fit_lesions": 82,
+        "holdout_lesions": 19,
+        "fit_patients": 49,
+        "holdout_patients": 15,
+        "weighted_average_metadata_weight": 0.44
+      },
+      {
+        "fold": 4,
+        "fit_lesions": 84,
+        "holdout_lesions": 17,
+        "fit_patients": 51,
+        "holdout_patients": 13,
+        "weighted_average_metadata_weight": 0.23
+      }
+    ]
+  },
+  "final_fit": {
+    "dataset": "complete_validation",
+    "method": "simple_average",
+    "parameters": {},
+    "selected_threshold": 0.23085218918827177,
+    "target_sensitivity": 0.95
+  }
+}
