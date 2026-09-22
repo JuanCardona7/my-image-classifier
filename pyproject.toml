@@ -15,9 +15,11 @@ dependencies = [
     "scikit-learn>=1.9.0",
     "scipy>=1.17.1",
     "seaborn>=0.13.2",
+    "streamlit>=1.64.0",
     "torch==2.2.2",
     "torchvision==0.17.2",
     "tqdm>=4.68.3",
+    "watchdog>=6.0.0",
     "xgboost>=3.4.0",
 ]
 
