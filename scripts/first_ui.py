@@ -23,6 +23,23 @@ from skin_lesion_ai.utils.data_utils import get_project_root, load_yaml_config
 # ============================================================
 
 CONFIG_PATH = "configs/data_config.yaml"
+LOGO_PATH = "configs/logo_ub.png"
+
+LEGAL_NOTICE = "© Todos los derechos reservados."
+
+PROJECT_TITLE = (
+    "Clasificación de lesiones cutáneas mediante imágenes macroscópicas "
+    "y metadatos clínicos"
+)
+PROJECT_SUBTITLE = (
+    "Prueba de concepto para la priorización clínica y el estudio de "
+    "malignidad entre lesiones biopsiadas."
+)
+PROJECT_COURSE = "Curso 2025–2026"
+PROJECT_AUTHORS = (
+    "Juan Guillermo Cardona Urrego, Pau Peracaula López-Amor y Carles Raich Bros"
+)
+PROJECT_TUTOR = "Miguel Ángel de la Llave Montiel"
 
 # Only the final TFM artefact names are hardcoded.
 MODEL_NAMES = {
@@ -145,11 +162,12 @@ def resolve_saved_model_reference(reference: str | Path) -> Path:
     """
     Resolve a base-model reference stored inside a fusion artefact.
 
-    Fusion metadata may contain an absolute path from the machine where it was
-    created. If that path no longer exists, the model directory is recovered
-    by basename inside the current configured models directory.
+    Saved references may use Windows or POSIX path separators. If the original
+    path no longer exists, recover the model directory by basename inside the
+    current configured models directory.
     """
-    reference = Path(reference)
+    reference_str = str(reference).replace("\\", "/")
+    reference = Path(reference_str)
 
     candidates = []
 
@@ -657,74 +675,87 @@ def validate_probability(probability: float) -> float:
 # ============================================================
 
 st.set_page_config(
-    page_title="Skin Lesion AI · TFM",
+    page_title="Clasificación de lesiones cutáneas · TFM",
     page_icon="🔬",
     layout="centered",
 )
 
-st.title("Skin Lesion AI")
-st.caption("Academic proof of concept · not validated for clinical use")
 
-st.info(
-    "Image validation is technical only. The application does not verify "
-    "that the image contains a skin lesion."
-)
+# ------------------------------------------------------------
+# Header
+# ------------------------------------------------------------
+
+logo_path = resolve_project_path(LOGO_PATH)
+
+header_logo, header_text = st.columns([1, 4])
+
+with header_logo:
+    if logo_path.is_file():
+        st.image(str(logo_path), width=150)
+
+with header_text:
+    st.title(PROJECT_TITLE)
+    st.markdown(f"*{PROJECT_SUBTITLE}*")
+    st.caption(
+        "Trabajo Final de Máster · Máster en Big Data & Data Science · Universitat de Barcelona"
+    )
+
+with st.expander("Información del proyecto"):
+    st.markdown(
+        f"""
+**{PROJECT_COURSE}**
+
+**Autores:** {PROJECT_AUTHORS}
+**Tutor:** {PROJECT_TUTOR}
+
+Esta aplicación es una prueba de concepto académica desarrollada en el marco
+del Trabajo Final de Máster. No es un producto sanitario y no ha sido validada
+para uso clínico.
+"""
+    )
 
 
 # ------------------------------------------------------------
-# Analysis selection
+# Input selection
 # ------------------------------------------------------------
 
-hypothesis = st.radio(
-    "1. Analysis",
-    options=[1, 2],
+st.subheader("Datos para el análisis")
+
+input_mode = st.radio(
+    "Información disponible",
+    options=[
+        "Imagen y metadatos clínicos",
+        "Solo imagen",
+        "Solo metadatos clínicos",
+    ],
     horizontal=True,
-    format_func=lambda value: ("H1 · Biopsy" if value == 1 else "H2 · Malignancy"),
 )
 
-st.subheader("2. Available information")
+use_image = input_mode != "Solo metadatos clínicos"
+use_metadata = input_mode != "Solo imagen"
 
-col_image, col_metadata = st.columns(2)
-
-with col_image:
-    use_image = st.checkbox(
-        "Image",
-        value=True,
-    )
-
-with col_metadata:
-    use_metadata = st.checkbox(
-        "Metadata",
-        value=True,
-    )
-
-try:
-    selected_model_name = select_model_name(
-        hypothesis=hypothesis,
-        use_metadata=use_metadata,
-        use_image=use_image,
-    )
-    selected_model_dir = get_model_directory(selected_model_name)
-    selected_model_metadata = read_model_metadata(str(selected_model_dir))
-
-except Exception as exc:
-    st.warning(str(exc))
-    st.stop()
+uploaded_file = None
+decoded_image = None
+raw_metadata_values = None
 
 
 # ------------------------------------------------------------
 # Image input
 # ------------------------------------------------------------
 
-uploaded_file = None
-decoded_image = None
-
 if use_image:
-    st.subheader("3. Image")
+    st.markdown("#### Imagen macroscópica")
 
     uploaded_file = st.file_uploader(
-        "Upload image",
+        "Sube una imagen de la lesión",
         type=["jpg", "jpeg", "png"],
+        help="Formatos admitidos: JPG, JPEG y PNG.",
+    )
+
+    st.caption(
+        "La validación del archivo es únicamente técnica: la aplicación no "
+        "verifica que la imagen contenga una lesión cutánea ni que tenga "
+        "calidad clínica suficiente."
     )
 
     if uploaded_file is not None:
@@ -734,38 +765,50 @@ if use_image:
             st.image(
                 decoded_image,
                 caption=(
-                    f"Uploaded image · "
+                    f"Imagen cargada · "
                     f"{decoded_image.width} × {decoded_image.height} px"
                 ),
                 width=280,
             )
 
-            st.success("The image file is readable and can be converted to RGB.")
-
-        except Exception as exc:
-            st.error(str(exc))
+        except Exception:
+            st.error(
+                "No se ha podido procesar la imagen. Comprueba el formato "
+                "y vuelve a intentarlo."
+            )
 
 
 # ------------------------------------------------------------
 # Metadata input
 # ------------------------------------------------------------
 
-raw_metadata_values = None
-
 if use_metadata:
-    st.subheader("4. Metadata" if use_image else "3. Metadata")
+    st.markdown("#### Metadatos clínicos")
+
+    sex_labels = {
+        "female": "Mujer",
+        "male": "Hombre",
+    }
+
+    anatomical_site_labels = {
+        "anterior torso": "Tronco anterior",
+        "posterior torso": "Tronco posterior",
+        "upper extremity": "Extremidad superior",
+        "lower extremity": "Extremidad inferior",
+        "head/neck": "Cabeza / cuello",
+    }
 
     col1, col2 = st.columns(2)
 
     with col1:
         sex = st.selectbox(
-            "Sex",
+            "Sexo",
             options=["female", "male"],
-            format_func=lambda value: value.capitalize(),
+            format_func=lambda value: sex_labels[value],
         )
 
         age = st.number_input(
-            "Age",
+            "Edad (años)",
             min_value=18,
             max_value=120,
             value=50,
@@ -774,13 +817,13 @@ if use_metadata:
 
     with col2:
         anatomical_site = st.selectbox(
-            "Anatomical site",
+            "Localización anatómica",
             options=list(ANATOM_SITE_MAPPING.keys()),
-            format_func=lambda value: (value.replace("/", " / ").title()),
+            format_func=lambda value: anatomical_site_labels[value],
         )
 
         diameter_mm = st.number_input(
-            "Largest lesion diameter (mm)",
+            "Diámetro máximo de la lesión (mm)",
             min_value=0.0,
             max_value=100.0,
             value=5.0,
@@ -797,80 +840,132 @@ if use_metadata:
 
 
 # ------------------------------------------------------------
-# Inference
+# Sequential H1 -> H2 inference
 # ------------------------------------------------------------
 
 st.divider()
 
 analyse = st.button(
-    "Analyse lesion",
+    "Analizar lesión",
     type="primary",
     use_container_width=True,
 )
 
 if analyse:
     if use_image and decoded_image is None:
-        st.error("Upload a valid image before running the analysis.")
+        st.error("Debes subir una imagen válida antes de realizar el análisis.")
         st.stop()
 
     try:
-        with st.spinner("Running model..."):
-            probability = predict_artifact_probability(
-                model_dir=selected_model_dir,
+        with st.spinner("Analizando la lesión..."):
+            # H1: prioritisation pattern based on biopsied vs non-biopsied lesions.
+            h1_model_name = select_model_name(
+                hypothesis=1,
+                use_metadata=use_metadata,
+                use_image=use_image,
+            )
+            h1_model_dir = get_model_directory(h1_model_name)
+            h1_model_metadata = read_model_metadata(str(h1_model_dir))
+
+            h1_probability = predict_artifact_probability(
+                model_dir=h1_model_dir,
                 raw_metadata_values=raw_metadata_values,
                 uploaded_image=decoded_image,
             )
+            h1_threshold = get_selected_threshold(h1_model_metadata)
+            h1_positive = h1_probability >= h1_threshold
 
-            threshold = get_selected_threshold(selected_model_metadata)
+            # H2 is only applicable if H1 places the lesion on the biopsied side,
+            # because H2 was developed among biopsied lesions.
+            h2_positive = None
 
-            positive = probability >= threshold
+            if h1_positive:
+                h2_model_name = select_model_name(
+                    hypothesis=2,
+                    use_metadata=use_metadata,
+                    use_image=use_image,
+                )
+                h2_model_dir = get_model_directory(h2_model_name)
+                h2_model_metadata = read_model_metadata(str(h2_model_dir))
 
-        st.subheader("Result")
+                h2_probability = predict_artifact_probability(
+                    model_dir=h2_model_dir,
+                    raw_metadata_values=raw_metadata_values,
+                    uploaded_image=decoded_image,
+                )
+                h2_threshold = get_selected_threshold(h2_model_metadata)
+                h2_positive = h2_probability >= h2_threshold
 
-        metric_col1, metric_col2 = st.columns(2)
+        st.subheader("Valoración orientativa")
 
-        with metric_col1:
-            st.metric(
-                "Model score",
-                f"{probability:.4f}",
+        if not h1_positive:
+            st.info(
+                "El modelo no identifica un patrón suficiente para priorizar "
+                "esta lesión para una valoración dirigida a biopsia."
             )
 
-        with metric_col2:
-            st.metric(
-                "Decision threshold",
-                f"{threshold:.4f}",
-            )
-
-        if hypothesis == 1:
-            if positive:
-                st.warning("Positive H1 classification: biopsied-side pattern.")
-            else:
-                st.success("Negative H1 classification: non-biopsied-side pattern.")
-
-            st.caption(
-                "H1 models the distinction between biopsied and "
-                "non-biopsied lesions in the TFM dataset. "
-                "It is not a cancer diagnosis."
+            st.markdown(
+                """
+Este resultado **no permite descartar malignidad** ni implica que una biopsia
+no pueda estar clínicamente indicada. La decisión sobre seguimiento,
+derivación, exploración dermatoscópica o biopsia debe realizarla un profesional
+médico teniendo en cuenta el conjunto de la valoración clínica.
+"""
             )
 
         else:
-            if positive:
-                st.warning("Positive H2 classification: malignant-side pattern.")
-            else:
-                st.success("Negative H2 classification: non-malignant-side pattern.")
-
-            st.caption(
-                "H2 was developed for malignancy classification among "
-                "biopsied lesions. It is not a clinical diagnosis."
+            st.warning(
+                "Los datos introducidos presentan un patrón que justifica la "
+                "valoración de la lesión por un profesional médico para "
+                "considerar la necesidad de biopsia."
             )
 
-    except Exception as exc:
-        st.error("Inference could not be completed.")
-        st.exception(exc)
+            st.markdown("#### Orientación adicional")
 
+            if h2_positive:
+                st.warning(
+                    "El segundo análisis identifica un patrón con sospecha "
+                    "de malignidad."
+                )
+            else:
+                st.info(
+                    "El segundo análisis identifica un patrón de mayor "
+                    "compatibilidad con benignidad."
+                )
+
+            st.markdown(
+                """
+La orientación sobre benignidad o malignidad es **exclusivamente orientativa**
+y no constituye un diagnóstico. La confirmación de una lesión sospechosa
+requiere valoración médica y, cuando esté indicada, estudio histopatológico.
+"""
+            )
+
+        st.warning(
+            "Esta herramienta es una prueba de concepto académica y funciona "
+            "únicamente como sistema de apoyo. Sus resultados no constituyen "
+            "un diagnóstico ni una indicación médica. La valoración realizada "
+            "por un profesional médico debe prevalecer siempre sobre el "
+            "resultado del modelo."
+        )
+
+    except Exception as exc:
+        st.error(
+            "No se ha podido completar el análisis. Comprueba los datos "
+            "introducidos y la configuración de los modelos."
+        )
+        with st.expander("Detalle técnico del error"):
+            st.exception(exc)
+
+
+# ------------------------------------------------------------
+# Footer
+# ------------------------------------------------------------
 
 st.divider()
+
 st.caption(
-    "Research prototype. Outputs are model scores and threshold-based "
-    "classifications, not clinical diagnoses or treatment recommendations."
+    "Prototipo de investigación · Uso exclusivamente académico · "
+    "No validado para uso clínico"
 )
+st.caption(LEGAL_NOTICE)
