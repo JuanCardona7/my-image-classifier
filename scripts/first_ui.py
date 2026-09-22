@@ -1,4 +1,7 @@
 from __future__ import annotations
+import os
+
+os.environ.setdefault("OMP_NUM_THREADS", "1")
 
 import json
 from io import BytesIO
@@ -23,7 +26,7 @@ from skin_lesion_ai.utils.data_utils import get_project_root, load_yaml_config
 # ============================================================
 
 CONFIG_PATH = "configs/data_config.yaml"
-LOGO_PATH = "configs/logo_ub.png"
+LOGO_PATH = "configs/logo.png"
 
 LEGAL_NOTICE = "© Todos los derechos reservados."
 
